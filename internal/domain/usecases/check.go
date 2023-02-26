@@ -7,15 +7,14 @@ import (
 )
 
 type CheckService interface {
-	CreateGuestCheck(ctx context.Context) error
-	CreateKitchenCheck(ctx context.Context) error
-	GetGeneratedChecks(ctx context.Context) ([]entity.ICheck, error)
-	UpdateChecksStatus(ctx context.Context, checkIDs []string) error
-	GetCheckFilePath(ctx context.Context, checkId string) (string, error)
+	CreateKitchenCheck(ctx context.Context, check entity.OrderCheck) error
+	CreateGuestCheck(ctx context.Context, check entity.OrderCheck) error
+	GetGeneratedChecks(ctx context.Context) ([]entity.OrderCheck, error)
+	UpdateChecksStatus(ctx context.Context, checkIDs []int) error
+	GetCheckFilePath(ctx context.Context, checkId int) (string, error)
 }
 
 type PrinterService interface {
-	GetPrinters(ctx context.Context) ([]entity.IPrinter, error)
 	GetPrintersByPoint(ctx context.Context, pointID int) ([]entity.IPrinter, error)
 }
 
@@ -24,8 +23,8 @@ type checkUseCase struct {
 	printerService PrinterService
 }
 
-func NewCheckUseCase(checkService CheckService) *checkUseCase {
-	return &checkUseCase{checkService: checkService}
+func NewCheckUseCase(checkService CheckService, printerService PrinterService) *checkUseCase {
+	return &checkUseCase{checkService: checkService, printerService: printerService}
 }
 
 func (c checkUseCase) GetGeneratedCheckIDs(ctx context.Context) (check.IDs, error) {
@@ -44,12 +43,12 @@ func (c checkUseCase) GetGeneratedCheckIDs(ctx context.Context) (check.IDs, erro
 
 }
 
-func (c checkUseCase) GetCheckFilePath(ctx context.Context, checkID string) (string, error) {
+func (c checkUseCase) GetCheckFilePath(ctx context.Context, checkID int) (string, error) {
 	return c.checkService.GetCheckFilePath(ctx, checkID)
 }
 
-func (c checkUseCase) SetChecksStatusPrinted(ctx context.Context, checkID []string) error {
-	return c.checkService.UpdateChecksStatus(ctx, checkID)
+func (c checkUseCase) SetChecksStatusPrinted(ctx context.Context, checkIDs []int) error {
+	return c.checkService.UpdateChecksStatus(ctx, checkIDs)
 }
 
 func (c checkUseCase) CreateChecks(ctx context.Context, order string) error {
@@ -59,12 +58,12 @@ func (c checkUseCase) CreateChecks(ctx context.Context, order string) error {
 	}
 	for _, printer := range printers {
 		if printer.Type() == entity.Kitchen {
-			err := c.checkService.CreateKitchenCheck(ctx)
+			err := c.checkService.CreateKitchenCheck(ctx, entity.OrderCheck{})
 			if err != nil {
 				return err
 			}
 		} else if printer.Type() == entity.Guest {
-			err := c.checkService.CreateGuestCheck(ctx)
+			err := c.checkService.CreateGuestCheck(ctx, entity.OrderCheck{})
 			if err != nil {
 				return err
 			}

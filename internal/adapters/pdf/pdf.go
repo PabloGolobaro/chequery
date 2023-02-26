@@ -8,7 +8,7 @@ import (
 type pdfStorage struct {
 }
 
-func (p pdfStorage) GenerateCheckPDF(check entity.ICheck) error {
+func (p pdfStorage) GenerateCheckPDF(check entity.OrderCheck) error {
 	htmltopdf.ExampleNewPDFGenerator()
 	return nil
 }

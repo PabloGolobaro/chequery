@@ -1,69 +1,61 @@
 package entity
 
 type ICheck interface {
-	SetPrinterID(api_key string)
-	SetOrder(order string)
-	SetStatus(status string)
-	SetFileName(filename string)
-	Status() string
-	Order() string
-	PrinterID() string
-	FileName() string
-	Id() string
 }
 
-type DbCheck struct {
-	id string
-	Check
+type OrderCheck struct {
+	id          int    `json:"id,omitempty"`
+	printerId   string `json:"printer_id,omitempty"`
+	order       string `json:"order"`
+	status      string `json:"status,omitempty"`
+	pdfFileName string `json:"pdf_file_name,omitempty"`
+	checkType   string `json:"check_type,omitempty"`
 }
 
-type Check struct {
-	printer_id  string
-	order       string
-	status      string
-	pdfFileName string
-}
-
-func (c *Check) Status() string {
-	return c.status
-}
-
-func (c *Check) Order() string {
-	return c.order
-}
-
-func (c *Check) PrinterID() string {
-	return c.printer_id
-}
-
-func (c *Check) FileName() string {
-	return c.pdfFileName
-}
-
-func (c *Check) SetFileName(filename string) {
-	c.pdfFileName = filename
-}
-
-func (c *Check) SetPrinterID(api_key string) {
-	c.printer_id = api_key
-}
-
-func (c *Check) SetOrder(order string) {
-	c.order = order
-}
-
-func (c *Check) SetStatus(status string) {
-	c.status = status
-}
-
-func (c *DbCheck) Id() string {
+func (c OrderCheck) Id() int {
 	return c.id
 }
 
-type KitchenCheck struct {
-	Check
+func (c OrderCheck) SetId(id int) {
+	c.id = id
 }
 
-type GuestCheck struct {
-	Check
+func (c OrderCheck) PrinterId() string {
+	return c.printerId
+}
+
+func (c OrderCheck) SetPrinterId(printerId string) {
+	c.printerId = printerId
+}
+
+func (c OrderCheck) Order() string {
+	return c.order
+}
+
+func (c OrderCheck) SetOrder(order string) {
+	c.order = order
+}
+
+func (c OrderCheck) Status() string {
+	return c.status
+}
+
+func (c OrderCheck) SetStatus(status string) {
+	c.status = status
+}
+
+func (c OrderCheck) PdfFileName() string {
+	return c.pdfFileName
+}
+
+func (c OrderCheck) SetPdfFileName(pdfFileName string) {
+	c.pdfFileName = pdfFileName
+}
+
+func (c OrderCheck) CheckType() string {
+	return c.checkType
+}
+
+func (c OrderCheck) SetCheckType(checkType string) {
+	c.checkType = checkType
 }

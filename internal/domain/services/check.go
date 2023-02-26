@@ -5,13 +5,15 @@ import (
 )
 
 type CheckStorage interface {
-	Get(id string) entity.ICheck
-	GetAll() []entity.ICheck
-	Create(check entity.ICheck) error
+	Get(id int) (entity.OrderCheck, error)
+	GetAll() []entity.OrderCheck
+	Create(check entity.OrderCheck) error
+	GetAllGeneratedChecks() ([]entity.OrderCheck, error)
+	UpdateStatusPrinted(checkIds []int) error
 }
 
 type PDFStorage interface {
-	GenerateCheckPDF(check entity.ICheck) error
+	GenerateCheckPDF(check entity.OrderCheck) error
 }
 
 type checkService struct {

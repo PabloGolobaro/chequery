@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type IDs []string
+type IDs []int
 
 func (p *checkHandler) GetGeneratedChecks(ctx echo.Context) error {
 	checkIDs, err := p.useCases.GetGeneratedCheckIDs(ctx.Request().Context())

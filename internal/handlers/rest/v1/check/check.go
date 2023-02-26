@@ -14,8 +14,8 @@ const (
 
 type UseCases interface {
 	GetGeneratedCheckIDs(ctx context.Context) (IDs, error)
-	SetChecksStatusPrinted(ctx context.Context, checkIDs []string) error
-	GetCheckFilePath(ctx context.Context, checkID string) (string, error)
+	SetChecksStatusPrinted(ctx context.Context, checkIDs []int) error
+	GetCheckFilePath(ctx context.Context, checkID int) (string, error)
 }
 
 type checkHandler struct {
