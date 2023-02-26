@@ -1,20 +1,17 @@
 package check
 
 import (
+	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
-func (c *checkHandler) UpdateChecksStatus(writer http.ResponseWriter, request *http.Request) {
-	query := request.URL.Query()
+func (c *checkHandler) UpdateChecksStatus(ctx echo.Context) error {
+	ids := ctx.QueryParams()["ids"]
 
-	ids := query["ids"]
-
-	err := c.useCases.SetChecksStatusPrinted(request.Context(), ids)
+	err := c.useCases.SetChecksStatusPrinted(ctx.Request().Context(), ids)
 	if err != nil {
-		writer.WriteHeader(http.StatusInternalServerError)
-		writer.Write([]byte((err.Error())))
-
-		return
+		return err
 	}
-	writer.WriteHeader(http.StatusOK)
+
+	return ctx.NoContent(http.StatusOK)
 }

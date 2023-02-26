@@ -1,7 +1,6 @@
 package printer
 
 import (
-	"context"
 	"net/http"
 )
 
@@ -10,7 +9,7 @@ const (
 )
 
 type UseCases interface {
-	GetChecks(ctx context.Context, printerID string) ([]string, error)
+	//GetGeneratedCheckIDs(ctx context.Context, printerID string) ([]string, error)
 }
 
 type printerHandler struct {
@@ -22,5 +21,5 @@ func NewPrinterHandler(useCases UseCases) *printerHandler {
 }
 
 func (p *printerHandler) Register(mux http.ServeMux) {
-	mux.HandleFunc(url, p.GetChecks)
+	//mux.HandleFunc(url, p.GetGeneratedCheckIDs)
 }

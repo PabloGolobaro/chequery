@@ -2,36 +2,30 @@ package order
 
 import (
 	"encoding/json"
+	"github.com/labstack/echo/v4"
 	"io"
 	"net/http"
 )
 
-func (o *orderHandler) PostOrder(writer http.ResponseWriter, request *http.Request) {
-	body := request.Body
+func (o *orderHandler) PostOrder(ctx echo.Context) error {
+
+	body := ctx.Request().Body
 	defer body.Close()
 
 	orderBytes, err := io.ReadAll(body)
 	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		writer.Write([]byte((err.Error())))
-
-		return
+		return err
 	}
 
 	if !json.Valid(orderBytes) {
-		writer.WriteHeader(http.StatusBadRequest)
-		writer.Write([]byte((err.Error())))
-
-		return
+		return err
 	}
 
-	err = o.checkUseCases.CreateChecks(request.Context(), string(orderBytes))
+	err = o.checkUseCases.CreateChecks(ctx.Request().Context(), string(orderBytes))
 	if err != nil {
-		writer.WriteHeader(http.StatusInternalServerError)
-		writer.Write([]byte((err.Error())))
 
-		return
+		return err
 	}
-	writer.WriteHeader(http.StatusCreated)
-	writer.Write([]byte("Order registered successfully"))
+
+	return ctx.JSON(http.StatusCreated, "Order registered successfully")
 }

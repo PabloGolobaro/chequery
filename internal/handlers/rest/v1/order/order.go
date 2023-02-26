@@ -2,11 +2,12 @@ package order
 
 import (
 	"context"
+	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 const (
-	url = "/api/v1/order"
+	url = "/order"
 )
 
 type UseCases interface {
@@ -21,6 +22,6 @@ func NewOrderHandler(checkUseCases UseCases) *orderHandler {
 	return &orderHandler{checkUseCases: checkUseCases}
 }
 
-func (o *orderHandler) Register(mux http.ServeMux) {
-	mux.HandleFunc(url, o.PostOrder)
+func (o *orderHandler) Register(router echo.Router) {
+	router.Add(http.MethodPost, url, o.PostOrder)
 }

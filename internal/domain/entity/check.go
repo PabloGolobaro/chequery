@@ -9,6 +9,12 @@ type ICheck interface {
 	Order() string
 	PrinterID() string
 	FileName() string
+	Id() string
+}
+
+type DbCheck struct {
+	id string
+	Check
 }
 
 type Check struct {
@@ -48,6 +54,10 @@ func (c *Check) SetOrder(order string) {
 
 func (c *Check) SetStatus(status string) {
 	c.status = status
+}
+
+func (c *DbCheck) Id() string {
+	return c.id
 }
 
 type KitchenCheck struct {

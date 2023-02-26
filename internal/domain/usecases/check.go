@@ -3,13 +3,15 @@ package usecases
 import (
 	"context"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
+	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
 )
 
 type CheckService interface {
 	CreateGuestCheck(ctx context.Context) error
 	CreateKitchenCheck(ctx context.Context) error
-	GetChecksByPrinterID(ctx context.Context, printerID string) ([]entity.ICheck, error)
+	GetGeneratedChecks(ctx context.Context) ([]entity.ICheck, error)
 	UpdateChecksStatus(ctx context.Context, checkIDs []string) error
+	GetCheckFilePath(ctx context.Context, checkId string) (string, error)
 }
 
 type PrinterService interface {
@@ -24,6 +26,26 @@ type checkUseCase struct {
 
 func NewCheckUseCase(checkService CheckService) *checkUseCase {
 	return &checkUseCase{checkService: checkService}
+}
+
+func (c checkUseCase) GetGeneratedCheckIDs(ctx context.Context) (check.IDs, error) {
+	var ids = check.IDs{}
+
+	generatedChecks, err := c.checkService.GetGeneratedChecks(ctx)
+	if err != nil {
+		return ids, err
+	}
+
+	for _, generatedCheck := range generatedChecks {
+		ids = append(ids, generatedCheck.Id())
+	}
+
+	return ids, nil
+
+}
+
+func (c checkUseCase) GetCheckFilePath(ctx context.Context, checkID string) (string, error) {
+	return c.checkService.GetCheckFilePath(ctx, checkID)
 }
 
 func (c checkUseCase) SetChecksStatusPrinted(ctx context.Context, checkID []string) error {
@@ -50,19 +72,4 @@ func (c checkUseCase) CreateChecks(ctx context.Context, order string) error {
 	}
 
 	return nil
-}
-
-func (c checkUseCase) GetChecks(ctx context.Context, printerID string) ([]string, error) {
-	checks, err := c.checkService.GetChecksByPrinterID(ctx, printerID)
-	if err != nil {
-		return nil, err
-	}
-
-	filenames := make([]string, 0, len(checks))
-
-	for _, check := range checks {
-		filenames = append(filenames, check.FileName())
-	}
-
-	return filenames, err
 }
