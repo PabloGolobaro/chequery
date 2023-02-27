@@ -1,31 +1,24 @@
 package order
 
 import (
-	"encoding/json"
 	"github.com/labstack/echo/v4"
-	"io"
+	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"net/http"
 )
 
 func (o *orderHandler) PostOrder(ctx echo.Context) error {
+	var order entity.OrderDetails
 
-	body := ctx.Request().Body
-	defer body.Close()
-
-	orderBytes, err := io.ReadAll(body)
+	err := ctx.Bind(&order)
 	if err != nil {
 		return err
 	}
 
-	if !json.Valid(orderBytes) {
-		return err
-	}
-
-	err = o.checkUseCases.CreateChecks(ctx.Request().Context(), string(orderBytes))
+	err = o.checkUseCases.CreateChecks(ctx.Request().Context(), order)
 	if err != nil {
 
 		return err
 	}
 
-	return ctx.JSON(http.StatusCreated, "Order registered successfully")
+	return ctx.JSON(http.StatusCreated, "OrderDetails registered successfully")
 }

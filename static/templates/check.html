@@ -1,0 +1,8 @@
+{{- /*gotype: github.com/pablogolobaro/chequery/internal/domain/entity.OrderCheck*/ -}}
+{{define "title"}} Order № {{.Id}}
+{{end}}
+{{define "check"}}
+    <p>Type - {{.checkType}}</p>
+    <p>Printer ID - {{.printerId}}</p>
+    {{.order}}
+{{end}}

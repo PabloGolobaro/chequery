@@ -3,6 +3,7 @@ package order
 import (
 	"context"
 	"github.com/labstack/echo/v4"
+	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"net/http"
 )
 
@@ -11,7 +12,7 @@ const (
 )
 
 type UseCases interface {
-	CreateChecks(ctx context.Context, order string) error
+	CreateChecks(ctx context.Context, order entity.OrderDetails) error
 }
 
 type orderHandler struct {

@@ -5,58 +5,25 @@ const (
 	Guest
 )
 
-type IPrinter interface {
-	SetName(name string)
-	SetApiKey(api_key string)
-	SetPointID(point_id int)
-	ApiKey() string
-	Name() string
-	PointID() int
-	Type() int
-}
-
 type Printer struct {
-	name     string
-	api_key  string
-	point_id int
-}
-
-func (p Printer) SetName(name string) {
-	p.name = name
-}
-
-func (p Printer) SetApiKey(api_key string) {
-	p.api_key = api_key
-}
-
-func (p Printer) SetPointID(point_id int) {
-	p.point_id = point_id
+	apiKey      string `json:"api_key,omitempty"`
+	name        string `json:"name,omitempty"`
+	pointId     int    `json:"point_id,omitempty"`
+	printerType int    `json:"printer_type,omitempty"`
 }
 
 func (p Printer) ApiKey() string {
-	return p.api_key
+	return p.apiKey
 }
 
 func (p Printer) Name() string {
 	return p.name
 }
 
-func (p Printer) PointID() int {
-	return p.point_id
+func (p Printer) PointId() int {
+	return p.pointId
 }
 
-type KitchenPrinter struct {
-	Printer
-}
-
-func (k KitchenPrinter) Type() int {
-	return Kitchen
-}
-
-type GuestPrinter struct {
-	Printer
-}
-
-func (g GuestPrinter) Type() int {
-	return Guest
+func (p Printer) PrinterType() int {
+	return p.printerType
 }

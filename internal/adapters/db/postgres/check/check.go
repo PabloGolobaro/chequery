@@ -15,6 +15,31 @@ func NewStorage(repository psql.Repository) services.CheckStorage {
 	return &storage{dbClient: repository.GetConnection()}
 }
 
+func (s storage) UpdateStatusGeneratedAndFilePath(checkId int, filePath string) error {
+	sqlQuery := []psql.SqlQuery{}
+
+	sql, args, err := prepareUpdateStatusGenerated(checkId)
+	if err != nil {
+		return err
+	}
+
+	sqlQuery = append(sqlQuery, *(psql.NewSqlQuery().SetSql(sql).SetArgs(args)))
+
+	sql, args, err = prepareUpdateFilePath(checkId, filePath)
+	if err != nil {
+		return err
+	}
+
+	sqlQuery = append(sqlQuery, *(psql.NewSqlQuery().SetSql(sql).SetArgs(args)))
+
+	err = psql.Transaction(s.dbClient, sqlQuery)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s storage) Get(id int) (entity.OrderCheck, error) {
 	var check = entity.OrderCheck{}
 	sql, args, err := prepareGet(id)
@@ -31,13 +56,26 @@ func (s storage) Get(id int) (entity.OrderCheck, error) {
 }
 
 func (s storage) GetAll() []entity.OrderCheck {
-	//TODO implement me
-	panic("implement me")
+	return nil
 }
 
-func (s storage) Create(check entity.OrderCheck) error {
-	//TODO implement me
-	panic("implement me")
+func (s storage) Create(check entity.OrderCheck) (int, error) {
+	sql, args, err := prepareCreate(check)
+	if err != nil {
+		return 0, nil
+	}
+
+	result, err := s.dbClient.Exec(sql, args)
+	if err != nil {
+		return 0, nil
+	}
+
+	lastInsertId, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(lastInsertId), nil
 }
 
 func (s storage) GetAllGeneratedChecks() ([]entity.OrderCheck, error) {

@@ -5,58 +5,47 @@ import (
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 )
 
-func (c checkService) CreateGuestCheck(ctx context.Context, check entity.OrderCheck) error {
-	errs := make(chan error)
-	quit := make(chan struct{})
-	go func() {
-		select {
-		case errs <- c.checkStorage.Create(check):
-		case <-quit:
-			return
-		}
-	}()
+func (c checkService) GeneratePDFFile(ctx context.Context, check entity.OrderCheck) error {
 
-	select {
-	case err := <-errs:
-
-		go func() {
-			err := c.pdfStorage.GenerateCheckPDF(check)
-			if err != nil {
-				return
-			}
-		}()
-
+	filePath, err := c.pdfStorage.GenerateCheckPDF(check)
+	if err != nil {
 		return err
-	case <-ctx.Done():
-		close(quit)
-		return ctx.Err()
 	}
+
+	err = c.checkStorage.UpdateStatusGeneratedAndFilePath(check.Id(), filePath)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (c checkService) CreateKitchenCheck(ctx context.Context, check entity.OrderCheck) error {
-	errs := make(chan error)
+func (c checkService) CreateCheck(ctx context.Context, check entity.OrderCheck) (entity.OrderCheck, error) {
+	type resultStruct struct {
+		createdId int
+		err       error
+	}
+
+	res := make(chan resultStruct)
 	quit := make(chan struct{})
 	go func() {
 		select {
-		case errs <- c.checkStorage.Create(check):
 		case <-quit:
 			return
+		default:
+			create, err := c.checkStorage.Create(check)
+			res <- resultStruct{createdId: create, err: err}
 		}
 	}()
 
 	select {
-	case err := <-errs:
-		go func() {
-			err := c.pdfStorage.GenerateCheckPDF(check)
-			if err != nil {
-				return
-			}
-		}()
+	case result := <-res:
+		check.SetId(result.createdId)
+		return check, result.err
 
-		return err
 	case <-ctx.Done():
 		close(quit)
-		return ctx.Err()
+		return check, ctx.Err()
 	}
 }
 
@@ -123,7 +112,7 @@ func (c checkService) GetCheckFilePath(ctx context.Context, checkId int) (string
 			if err != nil {
 				errs <- err
 			}
-			res <- generatedChecks.PdfFileName()
+			res <- generatedChecks.FilePath()
 		}
 	}()
 

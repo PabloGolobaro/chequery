@@ -14,12 +14,11 @@ func NewStorage(repository psql.Repository) *printerStorage {
 	return &printerStorage{dbClient: repository.GetConnection()}
 }
 
-func (p printerStorage) Get(id string) (entity.IPrinter, error) {
-	//TODO implement me
-	panic("implement me")
+func (p printerStorage) Get(id string) (entity.Printer, error) {
+	return entity.Printer{}, nil
 }
 
-func (p printerStorage) GetAll() (printers []entity.IPrinter, err error) {
+func (p printerStorage) GetAll() (printers []entity.Printer, err error) {
 	sql, args, err := prepareGetAll()
 	if err != nil {
 		return nil, err
@@ -33,7 +32,7 @@ func (p printerStorage) GetAll() (printers []entity.IPrinter, err error) {
 	return
 }
 
-func (p printerStorage) GetByPoint(pointID int) (printers []entity.IPrinter, err error) {
+func (p printerStorage) GetByPoint(pointID int) (printers []entity.Printer, err error) {
 	sql, args, err := prepareGetByPoint(pointID)
 	if err != nil {
 		return nil, err
@@ -47,6 +46,6 @@ func (p printerStorage) GetByPoint(pointID int) (printers []entity.IPrinter, err
 	return
 }
 
-func (p printerStorage) Create(printer entity.IPrinter) error {
+func (p printerStorage) Create(printer entity.Printer) error {
 	return nil
 }

@@ -7,13 +7,14 @@ import (
 type CheckStorage interface {
 	Get(id int) (entity.OrderCheck, error)
 	GetAll() []entity.OrderCheck
-	Create(check entity.OrderCheck) error
+	Create(check entity.OrderCheck) (int, error)
 	GetAllGeneratedChecks() ([]entity.OrderCheck, error)
 	UpdateStatusPrinted(checkIds []int) error
+	UpdateStatusGeneratedAndFilePath(checkId int, filePath string) error
 }
 
 type PDFStorage interface {
-	GenerateCheckPDF(check entity.OrderCheck) error
+	GenerateCheckPDF(check entity.OrderCheck) (string, error)
 }
 
 type checkService struct {

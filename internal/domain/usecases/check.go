@@ -4,18 +4,19 @@ import (
 	"context"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
+	"log"
 )
 
 type CheckService interface {
-	CreateKitchenCheck(ctx context.Context, check entity.OrderCheck) error
-	CreateGuestCheck(ctx context.Context, check entity.OrderCheck) error
+	CreateCheck(ctx context.Context, check entity.OrderCheck) (entity.OrderCheck, error)
 	GetGeneratedChecks(ctx context.Context) ([]entity.OrderCheck, error)
 	UpdateChecksStatus(ctx context.Context, checkIDs []int) error
 	GetCheckFilePath(ctx context.Context, checkId int) (string, error)
+	GeneratePDFFile(ctx context.Context, check entity.OrderCheck) error
 }
 
 type PrinterService interface {
-	GetPrintersByPoint(ctx context.Context, pointID int) ([]entity.IPrinter, error)
+	GetPrintersByPoint(ctx context.Context, pointID int) ([]entity.Printer, error)
 }
 
 type checkUseCase struct {
@@ -51,23 +52,29 @@ func (c checkUseCase) SetChecksStatusPrinted(ctx context.Context, checkIDs []int
 	return c.checkService.UpdateChecksStatus(ctx, checkIDs)
 }
 
-func (c checkUseCase) CreateChecks(ctx context.Context, order string) error {
-	printers, err := c.printerService.GetPrintersByPoint(ctx, 1)
+func (c checkUseCase) CreateChecks(ctx context.Context, details entity.OrderDetails) error {
+	printers, err := c.printerService.GetPrintersByPoint(ctx, details.PointId())
 	if err != nil {
 		return err
 	}
+
 	for _, printer := range printers {
-		if printer.Type() == entity.Kitchen {
-			err := c.checkService.CreateKitchenCheck(ctx, entity.OrderCheck{})
-			if err != nil {
-				return err
-			}
-		} else if printer.Type() == entity.Guest {
-			err := c.checkService.CreateGuestCheck(ctx, entity.OrderCheck{})
-			if err != nil {
-				return err
-			}
+
+		orderCheck := *(entity.NewOrderCheck().OrderDetails(details).Printer(printer))
+
+		orderCheck, err = c.checkService.CreateCheck(ctx, orderCheck)
+		if err != nil {
+			return err
 		}
+
+		go func(orderCheck entity.OrderCheck) {
+			err := c.checkService.GeneratePDFFile(context.Background(), orderCheck)
+			if err != nil {
+				log.Println("error generating pdf file: ", err)
+				return
+			}
+		}(orderCheck)
+
 	}
 
 	return nil
