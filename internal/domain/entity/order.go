@@ -1,14 +1,20 @@
 package entity
 
+import "fmt"
+
 type OrderDetails struct {
-	pointID int    `json:"pointID,omitempty"`
-	details string `json:"details,omitempty"`
+	PointID int
+	M       map[string]interface{}
 }
 
 func (o OrderDetails) Details() string {
-	return o.details
+	res := ""
+	for key, value := range o.M {
+		res += fmt.Sprintf("%v - %v\n", key, value)
+	}
+	return res
 }
 
 func (o OrderDetails) PointId() int {
-	return o.pointID
+	return o.PointID
 }

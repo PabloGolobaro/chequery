@@ -1,7 +1,9 @@
 package printer
 
 import (
-	"net/http"
+	"github.com/labstack/echo/v4"
+	"github.com/pablogolobaro/chequery/internal/handlers"
+	"go.uber.org/zap"
 )
 
 const (
@@ -9,17 +11,16 @@ const (
 )
 
 type UseCases interface {
-	//GetGeneratedCheckIDs(ctx context.Context, printerID string) ([]string, error)
 }
 
 type printerHandler struct {
+	log      zap.SugaredLogger
 	useCases UseCases
 }
 
-func NewPrinterHandler(useCases UseCases) *printerHandler {
-	return &printerHandler{useCases: useCases}
+func NewPrinterHandler(log zap.SugaredLogger, useCases UseCases) handlers.Handler {
+	return &printerHandler{log: log, useCases: useCases}
 }
 
-func (p *printerHandler) Register(mux http.ServeMux) {
-	//mux.HandleFunc(url, p.GetGeneratedCheckIDs)
+func (p *printerHandler) Register(router *echo.Group) {
 }

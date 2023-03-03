@@ -1,11 +1,19 @@
 package check
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/labstack/echo/v4"
+	"strconv"
+)
 
 func (c checkHandler) GetCheckPDF(ctx echo.Context) error {
 	checkId := ctx.Param("check_id")
 
-	filePath, err := c.useCases.GetCheckFilePath(ctx.Request().Context(), checkId)
+	id, err := strconv.Atoi(checkId)
+	if err != nil {
+		return err
+	}
+
+	filePath, err := c.useCases.GetCheckFilePath(ctx.Request().Context(), id)
 	if err != nil {
 		return err
 	}

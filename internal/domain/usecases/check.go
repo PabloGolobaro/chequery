@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
+	"go.uber.org/zap"
 	"log"
 )
 
@@ -20,12 +21,13 @@ type PrinterService interface {
 }
 
 type checkUseCase struct {
+	log            *zap.SugaredLogger
 	checkService   CheckService
 	printerService PrinterService
 }
 
-func NewCheckUseCase(checkService CheckService, printerService PrinterService) *checkUseCase {
-	return &checkUseCase{checkService: checkService, printerService: printerService}
+func NewCheckUseCase(log *zap.SugaredLogger, checkService CheckService, printerService PrinterService) *checkUseCase {
+	return &checkUseCase{log: log, checkService: checkService, printerService: printerService}
 }
 
 func (c checkUseCase) GetGeneratedCheckIDs(ctx context.Context) (check.IDs, error) {
@@ -60,7 +62,7 @@ func (c checkUseCase) CreateChecks(ctx context.Context, details entity.OrderDeta
 
 	for _, printer := range printers {
 
-		orderCheck := *(entity.NewOrderCheck().OrderDetails(details).Printer(printer))
+		orderCheck := entity.NewCheckBuilder().SetPrinterId(printer.ApiKey()).SetCheckType(printer.PrinterType()).SetOrder(details.Details()).Build()
 
 		orderCheck, err = c.checkService.CreateCheck(ctx, orderCheck)
 		if err != nil {

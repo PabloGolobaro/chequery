@@ -35,7 +35,7 @@ func Transaction(dbClient *sqlx.DB, queries []SqlQuery) error {
 		_, err = tx.Exec(query.sql, query.args)
 		if err != nil {
 			if rollbackErr := tx.Rollback(); rollbackErr != nil {
-				log.Println("update drivers: unable to rollback: %v", rollbackErr)
+				log.Printf("update drivers: unable to rollback: %v", rollbackErr)
 			}
 			return err
 		}

@@ -20,6 +20,8 @@ func NewPdfStorage(template *template.Template) *pdfStorage {
 }
 
 func (p pdfStorage) GenerateCheckPDF(check entity.OrderCheck) (string, error) {
+	filePath := filepath.Join(dirPath, fmt.Sprint(check.Id(), ".pdf"))
+
 	var b bytes.Buffer
 
 	err := p.template.ExecuteTemplate(&b, "base", check)
@@ -27,11 +29,10 @@ func (p pdfStorage) GenerateCheckPDF(check entity.OrderCheck) (string, error) {
 		return "", err
 	}
 
-	filePath := filepath.Join(dirPath, fmt.Sprint(check.Id(), ".pdf"))
-
-	err = htmltopdf.GeneratePDFCheck(filePath, &b)
+	err = htmltopdf.GeneratePDF(filePath, &b)
 	if err != nil {
 		return "", err
 	}
+
 	return filePath, nil
 }

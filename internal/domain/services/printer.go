@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
+	"go.uber.org/zap"
 )
 
 type PrinterStorage interface {
@@ -13,11 +14,12 @@ type PrinterStorage interface {
 }
 
 type printerService struct {
+	log            *zap.SugaredLogger
 	printerStorage PrinterStorage
 }
 
-func NewPrinterService(printerStorage PrinterStorage) *printerService {
-	return &printerService{printerStorage: printerStorage}
+func NewPrinterService(log *zap.SugaredLogger, printerStorage PrinterStorage) *printerService {
+	return &printerService{log: log, printerStorage: printerStorage}
 }
 
 func (p printerService) GetPrinters(ctx context.Context) ([]entity.Printer, error) {

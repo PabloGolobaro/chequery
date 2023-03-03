@@ -5,7 +5,7 @@ import (
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 )
 
-func GeneratePDFCheck(path string, buffer *bytes.Buffer) error {
+func GeneratePDF(path string, buffer *bytes.Buffer) error {
 	pdfg, err := wkhtmltopdf.NewPDFGenerator()
 	if err != nil {
 		return err
