@@ -23,7 +23,7 @@ func (m MockCheckUsecases) SetChecksStatusPrinted(ctx context.Context, checkIDs 
 }
 
 func (m MockCheckUsecases) GetCheckFilePath(ctx context.Context, checkID int) (string, error) {
-	return "./testdata/text.txt", nil
+	return "./testdata/0.pdf", nil
 }
 
 func mockHandler() *checkHandler {

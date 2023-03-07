@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/pablogolobaro/chequery/internal/app"
 	"github.com/pablogolobaro/chequery/internal/config"
+	_ "github.com/pablogolobaro/chequery/internal/docs"
 	"github.com/pablogolobaro/chequery/internal/logger"
 	"os"
 	"os/signal"

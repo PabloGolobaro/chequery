@@ -19,7 +19,7 @@ func Test_checkHandler_GetCheckPDF(t *testing.T) {
 	c := e.NewContext(req, rec)
 	c.SetPath(urlGetPDF)
 	c.SetParamNames("check_id")
-	c.SetParamValues("1")
+	c.SetParamValues("saf")
 	// Assertions
 	if assert.NoError(t, handler.GetCheckPDF(c)) {
 		assert.Equal(t, "pasha\r\n", rec.Body.String())
