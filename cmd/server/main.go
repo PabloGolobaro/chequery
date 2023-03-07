@@ -10,27 +10,27 @@ import (
 )
 
 func main() {
-	log := logger.Get()
+	logger := logger.Get()
 
-	log.Debug("Loading config...")
+	logger.Debug("Loading config...")
 	conf := config.Load()
 
-	log.Debug("Loaded config...")
+	logger.Debug("Loaded config...")
 
-	application := app.NewApplication(log)
+	application := app.NewApplication(logger)
 
-	log.Info("Bootstrap Application")
+	logger.Info("Bootstrap Application")
 
 	err := application.Bootstrap(conf)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
-	log.Info("RegisterRouter Application")
+	logger.Info("RegisterRouter Application")
 
 	err = application.RegisterRouter()
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 	chStop := make(chan os.Signal)
@@ -39,22 +39,22 @@ func main() {
 	signal.Notify(chStop, syscall.SIGTERM)
 
 	go func() {
-		log.Info("Start Application")
+		logger.Info("Start Application")
 		err := application.Start(conf)
 		errCh <- err
 	}()
 
 	select {
 	case <-chStop:
-		log.Info("Stop Application")
+		logger.Info("Stop Application")
 
 		err = application.Stop()
 		if err != nil {
-			log.Errorw("Cannot stop Application gracefully", "error:", err)
+			logger.Errorw("Cannot stop Application gracefully", "error:", err)
 		}
 	case err = <-errCh:
-		log.Errorw("Application error", "error:", err)
+		logger.Errorw("Application error", "error:", err)
 	}
 
-	log.Info("Application Stopped")
+	logger.Info("Application Stopped")
 }

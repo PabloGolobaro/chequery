@@ -10,12 +10,12 @@ func (c checkHandler) GetCheckPDF(ctx echo.Context) error {
 
 	id, err := strconv.Atoi(checkId)
 	if err != nil {
-		return err
+		return echo.ErrBadRequest
 	}
 
 	filePath, err := c.useCases.GetCheckFilePath(ctx.Request().Context(), id)
 	if err != nil {
-		return err
+		return echo.ErrInternalServerError
 	}
 
 	return ctx.File(filePath)

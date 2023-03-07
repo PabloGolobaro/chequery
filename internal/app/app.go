@@ -6,8 +6,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const templateDir = "./static/template"
-
 type Application struct {
 	log            *zap.SugaredLogger
 	router         *echo.Echo

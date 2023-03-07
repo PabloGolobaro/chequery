@@ -6,11 +6,14 @@ import (
 	"github.com/pablogolobaro/chequery/internal/config"
 	"github.com/pablogolobaro/chequery/internal/domain/services"
 	"github.com/pablogolobaro/chequery/internal/domain/usecases"
+
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
 	"github.com/pablogolobaro/chequery/pkg/psql"
 	"github.com/pablogolobaro/chequery/pkg/templ"
 )
+
+const templateDir = "./static/template"
 
 func (a *Application) Bootstrap(conf config.Config) error {
 	repository, err := psql.New(conf.DSN())

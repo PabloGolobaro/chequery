@@ -9,7 +9,7 @@ import (
 func (c *checkHandler) UpdateChecksStatus(ctx echo.Context) error {
 	queryIds := ctx.QueryParams()["id"]
 
-	ids := make(IDs, len(queryIds))
+	ids := make([]int, len(queryIds))
 
 	for i, id := range queryIds {
 		atoi, err := strconv.Atoi(id)

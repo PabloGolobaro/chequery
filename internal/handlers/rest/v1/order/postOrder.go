@@ -1,11 +1,20 @@
 package order
 
 import (
+	"encoding/json"
 	"github.com/labstack/echo/v4"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"net/http"
 	"strconv"
 )
+
+type OrderCreateRequest struct {
+	Order string `json:"order"`
+}
+
+type OrderCreateResponce struct {
+	Ids []int `json:"ids,omitempty"`
+}
 
 func (o *orderHandler) PostOrder(ctx echo.Context) error {
 	queryParamPoint := ctx.QueryParam("point_id")
@@ -13,24 +22,29 @@ func (o *orderHandler) PostOrder(ctx echo.Context) error {
 
 		return echo.ErrBadRequest
 	}
+
 	pointId, err := strconv.Atoi(queryParamPoint)
 	if err != nil {
 		return echo.ErrBadRequest
 	}
 
-	var order = entity.OrderDetails{PointID: pointId, M: map[string]interface{}{}}
+	request := OrderCreateRequest{}
 
-	err = ctx.Bind(&order.M)
+	err = ctx.Bind(&request)
 	if err != nil {
 
 		return echo.ErrBadRequest
 	}
 
-	err = o.checkUseCases.CreateChecks(ctx.Request().Context(), order)
+	if !json.Valid([]byte(request.Order)) {
+		return echo.ErrBadRequest
+	}
+
+	ids, err := o.useCases.CreateChecks(ctx.Request().Context(), entity.OrderDetails{PointID: pointId, Order: request.Order})
 	if err != nil {
 
 		return echo.ErrInternalServerError
 	}
 
-	return ctx.JSON(http.StatusCreated, "OrderDetails registered successfully")
+	return ctx.JSON(http.StatusCreated, OrderCreateResponce{Ids: ids})
 }

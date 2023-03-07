@@ -10,12 +10,12 @@ import (
 
 const (
 	urlGetPDF       = "/check/:check_id/pdf"
-	url             = "/check"
+	urlCheck        = "/check"
 	urlGetGenerated = "/check/generated"
 )
 
 type UseCases interface {
-	GetGeneratedCheckIDs(ctx context.Context) (IDs, error)
+	GetGeneratedCheckIDs(ctx context.Context) (GeneratedChecksResponse, error)
 	SetChecksStatusPrinted(ctx context.Context, checkIDs []int) error
 	GetCheckFilePath(ctx context.Context, checkID int) (string, error)
 }
@@ -32,5 +32,5 @@ func NewCheckHandler(log *zap.SugaredLogger, useCases UseCases) handlers.Handler
 func (c *checkHandler) Register(router *echo.Group) {
 	router.Add(http.MethodGet, urlGetPDF, c.GetCheckPDF)
 	router.Add(http.MethodGet, urlGetGenerated, c.GetGeneratedChecks)
-	router.Add(http.MethodPut, url, c.UpdateChecksStatus)
+	router.Add(http.MethodPut, urlCheck, c.UpdateChecksStatus)
 }

@@ -10,22 +10,22 @@ import (
 )
 
 const (
-	url = "/order"
+	urlOrders = "/order"
 )
 
 type UseCases interface {
-	CreateChecks(ctx context.Context, order entity.OrderDetails) error
+	CreateChecks(ctx context.Context, order entity.OrderDetails) (ids []int, err error)
 }
 
 type orderHandler struct {
-	log           *zap.SugaredLogger
-	checkUseCases UseCases
+	log      *zap.SugaredLogger
+	useCases UseCases
 }
 
 func NewOrderHandler(log *zap.SugaredLogger, checkUseCases UseCases) handlers.Handler {
-	return &orderHandler{log: log, checkUseCases: checkUseCases}
+	return &orderHandler{log: log, useCases: checkUseCases}
 }
 
 func (o *orderHandler) Register(router *echo.Group) {
-	router.Add(http.MethodPost, url, o.PostOrder)
+	router.Add(http.MethodPost, urlOrders, o.PostOrder)
 }

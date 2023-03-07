@@ -30,19 +30,19 @@ func NewCheckUseCase(log *zap.SugaredLogger, checkService CheckService, printerS
 	return &checkUseCase{log: log, checkService: checkService, printerService: printerService}
 }
 
-func (c checkUseCase) GetGeneratedCheckIDs(ctx context.Context) (check.IDs, error) {
-	var ids = check.IDs{}
+func (c checkUseCase) GetGeneratedCheckIDs(ctx context.Context) (check.GeneratedChecksResponse, error) {
+	var ids = []int{}
 
 	generatedChecks, err := c.checkService.GetGeneratedChecks(ctx)
 	if err != nil {
-		return ids, err
+		return check.GeneratedChecksResponse{IDs: ids}, err
 	}
 
 	for _, generatedCheck := range generatedChecks {
 		ids = append(ids, generatedCheck.Id())
 	}
 
-	return ids, nil
+	return check.GeneratedChecksResponse{IDs: ids}, nil
 
 }
 
@@ -54,30 +54,32 @@ func (c checkUseCase) SetChecksStatusPrinted(ctx context.Context, checkIDs []int
 	return c.checkService.UpdateChecksStatus(ctx, checkIDs)
 }
 
-func (c checkUseCase) CreateChecks(ctx context.Context, details entity.OrderDetails) error {
-	printers, err := c.printerService.GetPrintersByPoint(ctx, details.PointId())
+func (c checkUseCase) CreateChecks(ctx context.Context, order entity.OrderDetails) (ids []int, err error) {
+	printers, err := c.printerService.GetPrintersByPoint(ctx, order.PointId())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	for _, printer := range printers {
 
-		orderCheck := entity.NewCheckBuilder().SetPrinterId(printer.ApiKey()).SetCheckType(printer.PrinterType()).SetOrder(details.Details()).Build()
+		orderCheck := entity.NewCheckBuilder().SetPrinterId(printer.ApiKey()).SetCheckType(printer.PrinterType()).SetOrder(order.Details()).Build()
 
 		orderCheck, err = c.checkService.CreateCheck(ctx, orderCheck)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		go func(orderCheck entity.OrderCheck) {
 			err := c.checkService.GeneratePDFFile(context.Background(), orderCheck)
 			if err != nil {
 				log.Println("error generating pdf file: ", err)
+
 				return
 			}
 		}(orderCheck)
 
+		ids = append(ids, orderCheck.Id())
 	}
 
-	return nil
+	return
 }

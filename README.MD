@@ -4,7 +4,7 @@
 
 ## Features:
 - Rest API
-- Generating pdf checks from orders using WkHtmlToPdf
+- Generating pdf output from incoming orders using WkHtmlToPdf
 - Api listener to send generated checks to printers
 - Clean architecture pattern
 - Postgres as main storage provider
