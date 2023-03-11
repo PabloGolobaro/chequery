@@ -12,6 +12,7 @@ type Application struct {
 	checkHandler   handlers.Handler
 	orderHandler   handlers.Handler
 	printerHandler handlers.Handler
+	healthHandler  handlers.Handler
 }
 
 func NewApplication(log *zap.SugaredLogger) *Application {

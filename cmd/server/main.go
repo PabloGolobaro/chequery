@@ -16,7 +16,7 @@ func main() {
 	logger.Debug("Loading config...")
 	conf := config.Load()
 
-	logger.Debug("Loaded config...")
+	logger.Debugw("Config loaded", "conf", conf)
 
 	application := app.NewApplication(logger)
 

@@ -14,8 +14,12 @@ func (a *Application) RegisterRouter() error {
 	e.Use(middleware.Recover())
 
 	group := e.Group(apiUri)
+
 	a.checkHandler.Register(group)
+
 	a.orderHandler.Register(group)
+
+	a.healthHandler.Register(group)
 
 	a.router = e
 

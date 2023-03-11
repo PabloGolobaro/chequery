@@ -6,6 +6,7 @@ import (
 	"github.com/pablogolobaro/chequery/internal/config"
 	"github.com/pablogolobaro/chequery/internal/domain/services"
 	"github.com/pablogolobaro/chequery/internal/domain/usecases"
+	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/health"
 
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
@@ -13,7 +14,7 @@ import (
 	"github.com/pablogolobaro/chequery/pkg/templ"
 )
 
-const templateDir = "./static/template"
+const templateDir = "./static/templates"
 
 func (a *Application) Bootstrap(conf config.Config) error {
 	repository, err := psql.New(conf.DSN())
@@ -39,6 +40,8 @@ func (a *Application) Bootstrap(conf config.Config) error {
 	a.checkHandler = check.NewCheckHandler(a.log, useCases)
 
 	a.orderHandler = order.NewOrderHandler(a.log, useCases)
+
+	a.healthHandler = health.NewHealthCheckHandler()
 
 	return nil
 }

@@ -1,4 +1,4 @@
-/*.exe
+*.exe
 /vendor/
 /api/gen/
 /pkg/htmltopdf/testdata/wkhtmltopdf.exe

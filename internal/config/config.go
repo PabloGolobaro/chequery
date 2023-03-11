@@ -7,7 +7,6 @@ import (
 )
 
 var Global Config
-
 var once sync.Once
 
 type Config struct {
@@ -22,23 +21,23 @@ type Config struct {
 }
 
 func Load() Config {
+
 	once.Do(func() {
-		v := viper.New()
+		_ = viper.New()
 		viper.AutomaticEnv()
 
-		if err := v.ReadInConfig(); err != nil {
-			panic(fmt.Errorf("failed to read the configuration file: %s", err))
-		}
-
-		err := v.Unmarshal(&Global)
-		if err != nil {
-			panic(err)
-		}
+		Global.DbUser = viper.GetString("DB_USER")
+		Global.DbPass = viper.GetString("DB_PASS")
+		Global.DbHost = viper.GetString("DB_HOST")
+		Global.DbPort = viper.GetString("DB_PORT")
+		Global.DbName = viper.GetString("DB_NAME")
+		Global.HttpHost = viper.GetString("SERVER_HOST")
+		Global.HttpPort = viper.GetString("SERVER_PORT")
 	})
 
 	return Global
 }
 
 func (c Config) DSN() string {
-	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s", c.DbUser, c.DbPass, c.HttpHost, c.DbPort, c.DbName)
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", c.DbUser, c.DbPass, c.HttpHost, c.DbPort, c.DbName)
 }
