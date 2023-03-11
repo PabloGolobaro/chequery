@@ -33,7 +33,7 @@ type _ struct {
 
 // Pdf file of check
 // swagger:response PdfFile
-type _ struct {
+type Pdf struct {
 	// Pdf file of check
 	//
 	// In: body
