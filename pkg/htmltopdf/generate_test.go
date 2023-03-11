@@ -5,10 +5,14 @@ import (
 	"encoding/json"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"github.com/pablogolobaro/chequery/pkg/templ"
+	"os"
 	"path/filepath"
 	"strconv"
 	"testing"
 )
+
+const pdfFilesPath = "./testdata/pdf"
+const testPath = "/testdata"
 
 func testOrder() entity.OrderCheck {
 	m := map[string]interface{}{"vegetables": 1, "pork": 3}
@@ -43,8 +47,21 @@ func TestGeneratePDF(t *testing.T) {
 		return
 	}
 
-	dirPath := "./testdata/pdf"
-	filePath := filepath.Join(dirPath, strconv.Itoa(orderCheck.Id())+".pdf")
+	exPath, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	toolpath := filepath.Join(exPath, testPath)
+
+	t.Log(toolpath)
+
+	err = os.Setenv("WKHTMLTOPDF_PATH", toolpath)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	filePath := filepath.Join(pdfFilesPath, strconv.Itoa(orderCheck.Id())+".pdf")
 
 	type args struct {
 		path   string

@@ -6,13 +6,13 @@ import (
 )
 
 type GeneratedChecksResponse struct {
-	IDs []int
+	IDs []int `json:"ids"`
 }
 
 func (p *checkHandler) GetGeneratedChecks(ctx echo.Context) error {
 	generatedChecksResponse, err := p.useCases.GetGeneratedCheckIDs(ctx.Request().Context())
 	if err != nil {
-		return err
+		return echo.ErrInternalServerError
 	}
 
 	return ctx.JSON(http.StatusOK, generatedChecksResponse)

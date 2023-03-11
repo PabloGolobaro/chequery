@@ -21,7 +21,7 @@ func (c *checkHandler) UpdateChecksStatus(ctx echo.Context) error {
 
 	err := c.useCases.SetChecksStatusPrinted(ctx.Request().Context(), ids)
 	if err != nil {
-		return err
+		return echo.ErrInternalServerError
 	}
 
 	return ctx.NoContent(http.StatusOK)
