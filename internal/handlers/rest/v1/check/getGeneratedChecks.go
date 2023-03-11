@@ -6,6 +6,7 @@ import (
 )
 
 type GeneratedChecksResponse struct {
+	// Example: [1,2,3]
 	IDs []int `json:"ids"`
 }
 

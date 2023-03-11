@@ -22,7 +22,7 @@ import (
 //
 //     Responses:
 //       200: PdfFile
-//       500: DefaultError
+//       500: defaultError
 
 // swagger:parameters getPDF
 type _ struct {
@@ -37,11 +37,12 @@ type Pdf struct {
 	// Pdf file of check
 	//
 	// In: body
+	// Example: -
 	File runtime.File
 }
 
 // A default echo error
-// swagger:response DefaultError
+// swagger:response defaultError
 type DefaultError struct {
 	// The error message.
 	// in: body

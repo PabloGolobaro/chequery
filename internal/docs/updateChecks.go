@@ -11,12 +11,21 @@ package docs
 //     Deprecated: false
 //
 //     Responses:
+//       200: empty
 //       500: defaultError
 
+// List of printed checks ids
 // swagger:parameters updateChecksStatus
 type UpdateChecksListIDs struct {
 	// The IDs of a checks set status printed
 	//
 	// in:query
 	IDs []string `json:"id"`
+}
+
+// Just empty responce body
+// swagger:response empty
+type Empty struct {
+	// in: body
+	Body struct{}
 }
