@@ -14,7 +14,7 @@ import "github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
 //
 //     Responses:
 //       200: generatedIds
-//       500: defaultError
+//       500: genericError
 
 // List of generated checks ids
 // swagger:response generatedIds

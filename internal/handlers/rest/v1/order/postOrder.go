@@ -12,8 +12,9 @@ type OrderCreateRequest struct {
 	Order string `json:"order"`
 }
 
-type OrderCreateResponce struct {
-	Ids []int `json:"ids,omitempty"`
+type OrderCreateResponse struct {
+	// Example: [1,2,3]
+	Ids []int `json:"ids"`
 }
 
 func (o *orderHandler) PostOrder(ctx echo.Context) error {
@@ -46,5 +47,5 @@ func (o *orderHandler) PostOrder(ctx echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	return ctx.JSON(http.StatusCreated, OrderCreateResponce{Ids: ids})
+	return ctx.JSON(http.StatusCreated, OrderCreateResponse{Ids: ids})
 }

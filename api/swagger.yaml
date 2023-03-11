@@ -47,6 +47,27 @@ definitions:
             keys to sets of values.
         type: object
         x-go-package: net/textproto
+    OrderCreateRequest:
+        properties:
+            order:
+                type: string
+                x-go-name: Order
+        type: object
+        x-go-package: github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order
+    OrderCreateResponse:
+        properties:
+            ids:
+                example:
+                    - 1
+                    - 2
+                    - 3
+                items:
+                    format: int64
+                    type: integer
+                type: array
+                x-go-name: Ids
+        type: object
+        x-go-package: github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order
 host: localhost
 info:
     contact:
@@ -72,13 +93,14 @@ paths:
                   items:
                     type: string
                   name: id
+                  required: true
                   type: array
                   x-go-name: IDs
             responses:
                 "200":
                     $ref: '#/responses/empty'
                 "500":
-                    $ref: '#/responses/defaultError'
+                    $ref: '#/responses/genericError'
             schemes:
                 - http
             summary: Update status of some checks to be printed.
@@ -103,7 +125,7 @@ paths:
                 "200":
                     $ref: '#/responses/PdfFile'
                 "500":
-                    $ref: '#/responses/defaultError'
+                    $ref: '#/responses/genericError'
             schemes:
                 - http
             summary: Get pdf file for check.
@@ -117,12 +139,37 @@ paths:
                 "200":
                     $ref: '#/responses/generatedIds'
                 "500":
-                    $ref: '#/responses/defaultError'
+                    $ref: '#/responses/genericError'
             schemes:
                 - http
             summary: Get a list of IDs of generated checks.
             tags:
                 - check
+    /order:
+        post:
+            description: This will create new checks in db and starts generating pdf files from it.
+            operationId: createOrder
+            parameters:
+                - format: int64
+                  in: query
+                  name: point_id
+                  required: true
+                  type: integer
+                  x-go-name: PointId
+                - in: body
+                  name: Body
+                  schema:
+                    $ref: '#/definitions/OrderCreateRequest'
+            responses:
+                "200":
+                    $ref: '#/responses/orderCreateResponse'
+                default:
+                    $ref: '#/responses/genericError'
+            schemes:
+                - http
+            summary: Create checks from new order.
+            tags:
+                - order
 produces:
     - application/json
     - application/pdf
@@ -131,17 +178,6 @@ responses:
         description: Pdf file of check
         schema:
             $ref: '#/definitions/File'
-    defaultError:
-        description: A default echo error
-        schema:
-            properties:
-                Message:
-                    description: The validation message
-                    example: Expected type int
-                    type: string
-            required:
-                - Message
-            type: object
     empty:
         description: Just empty responce body
         schema:
@@ -150,6 +186,21 @@ responses:
         description: List of generated checks ids
         schema:
             $ref: '#/definitions/GeneratedChecksResponse'
+    genericError:
+        description: Generic server error
+        schema:
+            properties:
+                Message:
+                    description: The error message
+                    example: Error loading file
+                    type: string
+            required:
+                - Message
+            type: object
+    orderCreateResponse:
+        description: List of created checks IDs
+        schema:
+            $ref: '#/definitions/OrderCreateResponse'
 schemes:
     - http
 swagger: "2.0"

@@ -12,7 +12,7 @@ package docs
 //
 //     Responses:
 //       200: empty
-//       500: defaultError
+//       500: genericError
 
 // List of printed checks ids
 // swagger:parameters updateChecksStatus
@@ -20,6 +20,7 @@ type UpdateChecksListIDs struct {
 	// The IDs of a checks set status printed
 	//
 	// in:query
+	// required: true
 	IDs []string `json:"id"`
 }
 
