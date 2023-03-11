@@ -1,0 +1,97 @@
+basePath: /api/v1
+consumes:
+    - application/json
+definitions:
+    File:
+        properties:
+            Data:
+                $ref: '#/definitions/File'
+            Header:
+                $ref: '#/definitions/FileHeader'
+        title: File represents an uploaded file.
+        type: object
+        x-go-package: github.com/go-openapi/swag
+    FileHeader:
+        properties:
+            Filename:
+                type: string
+            Header:
+                $ref: '#/definitions/MIMEHeader'
+            Size:
+                format: int64
+                type: integer
+        title: A FileHeader describes a file part of a multipart request.
+        type: object
+        x-go-package: mime/multipart
+    MIMEHeader:
+        additionalProperties:
+            items:
+                type: string
+            type: array
+        description: |-
+            A MIMEHeader represents a MIME-style header mapping
+            keys to sets of values.
+        type: object
+        x-go-package: net/textproto
+host: localhost
+info:
+    contact:
+        email: yeu344@gmail.com
+        name: Pablo Golobar
+    description: |-
+        the purpose of this application is to provide an application
+        that is generating different pdf checks
+    license:
+        name: MIT
+        url: http://opensource.org/licenses/MIT
+    termsOfService: there are no TOS at this moment
+    title: CheckGenerating API.
+    version: 0.0.1
+paths:
+    /check/{check_id}/pdf:
+        get:
+            consumes:
+                - application/json
+            description: This will download pdf file of explicit check.
+            operationId: getPDF
+            parameters:
+                - description: The ID of a check
+                  in: path
+                  name: check_id
+                  required: true
+                  type: string
+                  x-go-name: CheckId
+            produces:
+                - application/pdf
+            responses:
+                "200":
+                    $ref: '#/responses/PdfFile'
+                "500":
+                    $ref: '#/responses/DefaultError'
+            schemes:
+                - http
+            summary: Get pdf file for check.
+            tags:
+                - check
+produces:
+    - application/json
+    - application/pdf
+responses:
+    DefaultError:
+        description: A default echo error
+        schema:
+            properties:
+                Message:
+                    description: The validation message
+                    example: Expected type int
+                    type: string
+            required:
+                - Message
+            type: object
+    PdfFile:
+        description: Pdf file of check
+        schema:
+            $ref: '#/definitions/File'
+schemes:
+    - http
+swagger: "2.0"
