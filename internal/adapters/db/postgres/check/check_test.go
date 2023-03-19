@@ -42,3 +42,54 @@ func Test_storage_Create(t *testing.T) {
 		})
 	}
 }
+
+func Test_storage_GetAllGeneratedChecks(t *testing.T) {
+	DSN := "host=localhost port=5432 user=golobar password=password dbname=golo sslmode=disable"
+	driver := "postgres"
+
+	tests := []struct {
+		name     string
+		dbClient *sqlx.DB
+		wantErr  bool
+	}{
+		{name: "Simple", dbClient: sqlx.MustConnect(driver, DSN), wantErr: false}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := storage{
+				dbClient: tt.dbClient,
+			}
+			got, err := s.GetAllGeneratedChecks()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetAllGeneratedChecks() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			t.Log(got)
+		})
+	}
+}
+
+func Test_storage_Get(t *testing.T) {
+	DSN := "host=localhost port=5432 user=golobar password=password dbname=golo sslmode=disable"
+	driver := "postgres"
+
+	tests := []struct {
+		name     string
+		dbClient *sqlx.DB
+		id       int
+		wantErr  bool
+	}{
+		{name: "Simple", dbClient: sqlx.MustConnect(driver, DSN), id: 16, wantErr: false}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := storage{
+				dbClient: tt.dbClient,
+			}
+			got, err := s.Get(tt.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			t.Log(got)
+		})
+	}
+}

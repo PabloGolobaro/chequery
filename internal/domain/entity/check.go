@@ -3,7 +3,7 @@ package entity
 type OrderCheck struct {
 	Id        int    `db:"id"`
 	PrinterId string `db:"printer_id"`
-	Order     string `db:"order"`
+	Order     string `db:"check_order"`
 	Status    string `db:"status"`
 	FilePath  string `db:"file_path"`
 	CheckType int    `db:"check_type"`

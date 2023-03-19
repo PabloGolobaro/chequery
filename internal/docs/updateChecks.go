@@ -21,7 +21,7 @@ type UpdateChecksListIDs struct {
 	//
 	// in:query
 	// required: true
-	IDs []string `json:"id"`
+	IDs []int `json:"id"`
 }
 
 // Just empty responce body

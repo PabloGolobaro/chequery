@@ -1,7 +1,7 @@
 package docs
 
 import (
-	"github.com/go-openapi/runtime"
+	"os"
 )
 
 // swagger:route GET /check/{check_id}/pdf check getPDF
@@ -21,24 +21,22 @@ import (
 //     Deprecated: false
 //
 //     Responses:
-//       200: PdfFile
+//       200: FileResponse
 //       500: genericError
 
 // swagger:parameters getPDF
 type _ struct {
 	// The ID of a check
 	// in:path
-	CheckId string `json:"check_id"`
+	CheckId int `json:"check_id"`
 }
 
 // Pdf file of check
-// swagger:response PdfFile
-type Pdf struct {
-	// Pdf file of check
-	//
+// swagger:response FileResponse
+type FileResponse struct {
 	// In: body
-	// Example: -
-	File runtime.File
+	// swagger:file
+	File os.File
 }
 
 // Generic server error

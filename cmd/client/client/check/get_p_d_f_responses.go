@@ -15,20 +15,19 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-
-	"github.com/pablogolobaro/chequery/cmd/client/models"
 )
 
 // GetPDFReader is a Reader for the GetPDF structure.
 type GetPDFReader struct {
 	formats strfmt.Registry
+	writer  io.Writer
 }
 
 // ReadResponse reads a server response into the received o.
 func (o *GetPDFReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
 	case 200:
-		result := NewGetPDFOK()
+		result := NewGetPDFOK(o.writer)
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -45,8 +44,11 @@ func (o *GetPDFReader) ReadResponse(response runtime.ClientResponse, consumer ru
 }
 
 // NewGetPDFOK creates a GetPDFOK with default headers values
-func NewGetPDFOK() *GetPDFOK {
-	return &GetPDFOK{}
+func NewGetPDFOK(writer io.Writer) *GetPDFOK {
+	return &GetPDFOK{
+
+		Payload: writer,
+	}
 }
 
 /*
@@ -55,7 +57,7 @@ GetPDFOK describes a response with status code 200, with default header values.
 Pdf file of check
 */
 type GetPDFOK struct {
-	Payload *models.File
+	Payload io.Writer
 }
 
 // IsSuccess returns true when this get p d f o k response has a 2xx status code
@@ -96,13 +98,11 @@ func (o *GetPDFOK) String() string {
 	return fmt.Sprintf("[GET /check/{check_id}/pdf][%d] getPDFOK  %+v", 200, o.Payload)
 }
 
-func (o *GetPDFOK) GetPayload() *models.File {
+func (o *GetPDFOK) GetPayload() io.Writer {
 	return o.Payload
 }
 
 func (o *GetPDFOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.File)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

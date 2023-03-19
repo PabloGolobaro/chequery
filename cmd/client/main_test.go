@@ -1,11 +1,15 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"github.com/pablogolobaro/chequery/cmd/client/client"
+	"github.com/pablogolobaro/chequery/cmd/client/client/check"
 	"github.com/pablogolobaro/chequery/cmd/client/client/order"
 	"github.com/pablogolobaro/chequery/cmd/client/models"
 	"github.com/stretchr/testify/assert"
+	"io"
+	"os"
 	"testing"
 )
 
@@ -36,5 +40,46 @@ func TestOrderCreation(t *testing.T) {
 	}
 	assert.Equal(t, 201, createOrder.Code())
 	t.Log(createOrder.String())
+
+}
+
+func TestGetGenerated(t *testing.T) {
+	apiClient := client.NewHTTPClient(nil)
+	getGenerated, err := apiClient.Check.GetGenerated(nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	assert.Equal(t, 200, getGenerated.Code())
+	t.Log(getGenerated.String())
+
+}
+
+func TestGetPDF(t *testing.T) {
+	buffer := &bytes.Buffer{}
+	apiClient := client.NewHTTPClient(nil)
+	getPDF, err := apiClient.Check.GetPDF(&check.GetPDFParams{CheckID: 16, Context: context.Background()}, buffer)
+	if err != nil {
+		t.Log(err.Error())
+	}
+	assert.Equal(t, 200, getPDF.Code())
+	c, err := io.Copy(os.Stdout, buffer)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(c)
+
+}
+
+func TestUpdateStatus(t *testing.T) {
+	apiClient := client.NewHTTPClient(nil)
+	getGenerated, err := apiClient.Check.UpdateChecksStatus(&check.UpdateChecksStatusParams{IDs: []int64{16, 17}, Context: context.Background()})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	assert.Equal(t, 200, getGenerated.Code())
+	t.Log(getGenerated.String())
 
 }

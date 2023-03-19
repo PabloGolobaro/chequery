@@ -48,7 +48,7 @@ func (s storage) Get(id int) (entity.OrderCheck, error) {
 		return check, err
 	}
 
-	err = s.dbClient.Select(&check, sql, args...)
+	err = s.dbClient.Get(&check, sql, args...)
 	if err != nil {
 		return check, err
 	}
@@ -110,7 +110,7 @@ func (s storage) UpdateStatusPrinted(checkIds []int) error {
 		return err
 	}
 
-	_, err = s.dbClient.Exec(sql, args)
+	_, err = s.dbClient.Exec(sql, args...)
 	if err != nil {
 		return err
 	}

@@ -7,6 +7,7 @@ package check
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
@@ -32,7 +33,7 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	GetGenerated(params *GetGeneratedParams, opts ...ClientOption) (*GetGeneratedOK, error)
 
-	GetPDF(params *GetPDFParams, opts ...ClientOption) (*GetPDFOK, error)
+	GetPDF(params *GetPDFParams, writer io.Writer, opts ...ClientOption) (*GetPDFOK, error)
 
 	UpdateChecksStatus(params *UpdateChecksStatusParams, opts ...ClientOption) (*UpdateChecksStatusOK, error)
 
@@ -84,7 +85,7 @@ GetPDF gets pdf file for check
 
 This will download pdf file of explicit check.
 */
-func (a *Client) GetPDF(params *GetPDFParams, opts ...ClientOption) (*GetPDFOK, error) {
+func (a *Client) GetPDF(params *GetPDFParams, writer io.Writer, opts ...ClientOption) (*GetPDFOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetPDFParams()
@@ -97,7 +98,7 @@ func (a *Client) GetPDF(params *GetPDFParams, opts ...ClientOption) (*GetPDFOK, 
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
-		Reader:             &GetPDFReader{formats: a.formats},
+		Reader:             &GetPDFReader{formats: a.formats, writer: writer},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}

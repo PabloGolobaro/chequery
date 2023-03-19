@@ -4,7 +4,6 @@ import (
 	"github.com/pablogolobaro/chequery/cmd/client/client"
 	"github.com/pablogolobaro/chequery/cmd/client/client/check"
 	"log"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -42,22 +41,22 @@ func (w Worker) handleChecks() error {
 		return err
 	}
 
-	successIds := make([]string, 0, len(generated.Payload.IDs))
+	successIds := make([]int64, 0, len(generated.Payload.IDs))
 
 	var wg sync.WaitGroup
 	for _, id := range generated.Payload.IDs {
 		wg.Add(1)
 		go func(id int64) {
-			getPDF, err := w.client.Check.GetPDF(&check.GetPDFParams{CheckID: strconv.Itoa(int(id))})
+			_, err := w.client.Check.GetPDF(&check.GetPDFParams{CheckID: id}, nil)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 
 			log.Printf("Sending to printer check by id №%v", id)
-			log.Printf("Length of file: %v", getPDF.Payload.Header.Size)
+			//log.Printf("Length of file: %v", getPDF.Payload.Header.Size)
 
-			successIds = append(successIds, strconv.Itoa(int(id)))
+			successIds = append(successIds)
 		}(id)
 	}
 	wg.Wait()

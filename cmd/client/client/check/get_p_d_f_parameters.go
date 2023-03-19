@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewGetPDFParams creates a new GetPDFParams object,
@@ -64,8 +65,10 @@ type GetPDFParams struct {
 	/* CheckID.
 
 	   The ID of a check
+
+	   Format: int64
 	*/
-	CheckID string
+	CheckID int64
 
 	timeout    time.Duration
 	Context    context.Context
@@ -121,13 +124,13 @@ func (o *GetPDFParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithCheckID adds the checkID to the get p d f params
-func (o *GetPDFParams) WithCheckID(checkID string) *GetPDFParams {
+func (o *GetPDFParams) WithCheckID(checkID int64) *GetPDFParams {
 	o.SetCheckID(checkID)
 	return o
 }
 
 // SetCheckID adds the checkId to the get p d f params
-func (o *GetPDFParams) SetCheckID(checkID string) {
+func (o *GetPDFParams) SetCheckID(checkID int64) {
 	o.CheckID = checkID
 }
 
@@ -140,7 +143,7 @@ func (o *GetPDFParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regist
 	var res []error
 
 	// path param check_id
-	if err := r.SetPathParam("check_id", o.CheckID); err != nil {
+	if err := r.SetPathParam("check_id", swag.FormatInt64(o.CheckID)); err != nil {
 		return err
 	}
 

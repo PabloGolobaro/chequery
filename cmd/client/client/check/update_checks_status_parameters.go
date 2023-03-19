@@ -66,7 +66,7 @@ type UpdateChecksStatusParams struct {
 
 	   The IDs of a checks set status printed
 	*/
-	IDs []string
+	IDs []int64
 
 	timeout    time.Duration
 	Context    context.Context
@@ -122,13 +122,13 @@ func (o *UpdateChecksStatusParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithIDs adds the id to the update checks status params
-func (o *UpdateChecksStatusParams) WithIDs(id []string) *UpdateChecksStatusParams {
+func (o *UpdateChecksStatusParams) WithIDs(id []int64) *UpdateChecksStatusParams {
 	o.SetIDs(id)
 	return o
 }
 
 // SetIDs adds the id to the update checks status params
-func (o *UpdateChecksStatusParams) SetIDs(id []string) {
+func (o *UpdateChecksStatusParams) SetIDs(id []int64) {
 	o.IDs = id
 }
 
@@ -162,9 +162,9 @@ func (o *UpdateChecksStatusParams) bindParamID(formats strfmt.Registry) []string
 	iDIR := o.IDs
 
 	var iDIC []string
-	for _, iDIIR := range iDIR { // explode []string
+	for _, iDIIR := range iDIR { // explode []int64
 
-		iDIIV := iDIIR // string as string
+		iDIIV := swag.FormatInt64(iDIIR) // int64 as string
 		iDIC = append(iDIC, iDIIV)
 	}
 

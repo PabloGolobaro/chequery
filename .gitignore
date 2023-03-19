@@ -2,3 +2,4 @@
 /vendor/
 /api/gen/
 /pkg/htmltopdf/testdata/wkhtmltopdf.exe
+/media/pdf/

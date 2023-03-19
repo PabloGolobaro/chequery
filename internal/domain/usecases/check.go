@@ -34,6 +34,7 @@ func (c checkUseCase) GetGeneratedCheckIDs(ctx context.Context) (check.Generated
 
 	generatedChecks, err := c.checkService.GetGeneratedChecks(ctx)
 	if err != nil {
+		c.log.Errorw("Check.Usecases.CreateChecks.checkService.GetGeneratedChecks", "error: ", err)
 		return check.GeneratedChecksResponse{IDs: ids}, err
 	}
 

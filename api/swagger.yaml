@@ -2,27 +2,6 @@ basePath: /api/v1
 consumes:
     - application/json
 definitions:
-    File:
-        properties:
-            Data:
-                $ref: '#/definitions/File'
-            Header:
-                $ref: '#/definitions/FileHeader'
-        title: File represents an uploaded file.
-        type: object
-        x-go-package: github.com/go-openapi/swag
-    FileHeader:
-        properties:
-            Filename:
-                type: string
-            Header:
-                $ref: '#/definitions/MIMEHeader'
-            Size:
-                format: int64
-                type: integer
-        title: A FileHeader describes a file part of a multipart request.
-        type: object
-        x-go-package: mime/multipart
     GeneratedChecksResponse:
         properties:
             ids:
@@ -48,16 +27,6 @@ definitions:
             - message
         type: object
         x-go-package: github.com/pablogolobaro/chequery/internal/handlers/rest/v1/health
-    MIMEHeader:
-        additionalProperties:
-            items:
-                type: string
-            type: array
-        description: |-
-            A MIMEHeader represents a MIME-style header mapping
-            keys to sets of values.
-        type: object
-        x-go-package: net/textproto
     OrderCreateRequest:
         properties:
             order:
@@ -102,7 +71,8 @@ paths:
                 - description: The IDs of a checks set status printed
                   in: query
                   items:
-                    type: string
+                    format: int64
+                    type: integer
                   name: id
                   required: true
                   type: array
@@ -125,16 +95,17 @@ paths:
             operationId: getPDF
             parameters:
                 - description: The ID of a check
+                  format: int64
                   in: path
                   name: check_id
                   required: true
-                  type: string
+                  type: integer
                   x-go-name: CheckId
             produces:
                 - application/pdf
             responses:
                 "200":
-                    $ref: '#/responses/PdfFile'
+                    $ref: '#/responses/FileResponse'
                 "500":
                     $ref: '#/responses/genericError'
             schemes:
@@ -203,10 +174,10 @@ produces:
     - application/json
     - application/pdf
 responses:
-    PdfFile:
+    FileResponse:
         description: Pdf file of check
         schema:
-            $ref: '#/definitions/File'
+            type: file
     empty:
         description: Just empty responce body
         schema:

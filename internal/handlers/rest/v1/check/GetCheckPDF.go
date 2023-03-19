@@ -15,6 +15,7 @@ func (c checkHandler) GetCheckPDF(ctx echo.Context) error {
 
 	filePath, err := c.useCases.GetCheckFilePath(ctx.Request().Context(), id)
 	if err != nil {
+		c.log.Errorw("Check.useCases.GetCheckFilePath", "error: ", err, "id", id)
 		return echo.ErrInternalServerError
 	}
 
