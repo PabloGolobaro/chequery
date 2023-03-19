@@ -7,5 +7,13 @@ import (
 
 func (h *healthCheckHandler) LiveProbe(ctx echo.Context) error {
 
-	return ctx.JSON(http.StatusOK, "I'm alive")
+	return ctx.JSON(http.StatusOK, LiveProbeResponse{Message: "I'm alive"})
+}
+
+type LiveProbeResponse struct {
+	// The live message
+	//
+	// Required: true
+	// Example: I'm alive
+	Message string `json:"message"`
 }

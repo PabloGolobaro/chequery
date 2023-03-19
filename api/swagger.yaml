@@ -37,6 +37,17 @@ definitions:
                 x-go-name: IDs
         type: object
         x-go-package: github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check
+    LiveProbeResponse:
+        properties:
+            message:
+                description: The live message
+                example: I'm alive
+                type: string
+                x-go-name: Message
+        required:
+            - message
+        type: object
+        x-go-package: github.com/pablogolobaro/chequery/internal/handlers/rest/v1/health
     MIMEHeader:
         additionalProperties:
             items:
@@ -145,6 +156,24 @@ paths:
             summary: Get a list of IDs of generated checks.
             tags:
                 - check
+    /health-check:
+        get:
+            consumes:
+                - application/json
+            description: This will ensure that server router is working.
+            operationId: liveProbe
+            produces:
+                - application/pdf
+            responses:
+                "200":
+                    $ref: '#/responses/liveProbeSuccess'
+                "500":
+                    description: ""
+            schemes:
+                - http
+            summary: Get live probe.
+            tags:
+                - health
     /order:
         post:
             description: This will create new checks in db and starts generating pdf files from it.
@@ -197,6 +226,10 @@ responses:
             required:
                 - Message
             type: object
+    liveProbeSuccess:
+        description: Generic server live probe message
+        schema:
+            $ref: '#/definitions/LiveProbeResponse'
     orderCreateResponse:
         description: List of created checks IDs
         schema:
