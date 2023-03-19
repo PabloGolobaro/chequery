@@ -5,12 +5,12 @@ import (
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 )
 
-const checkTable = "check"
+const checkTable = "checks"
 
 func prepareCreate(check entity.OrderCheck) (string, []interface{}, error) {
 	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
-	rawQuery := psqlSq.Insert(checkTable).Columns("printer_id", "order", "status", "check_type").
+	rawQuery := psqlSq.Insert(checkTable).Columns("printer_id", "check_order", "status", "check_type").
 		Values(check.PrinterId(), check.Order(), check.Status(), check.CheckType())
 
 	return rawQuery.ToSql()

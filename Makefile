@@ -32,3 +32,9 @@ path:
 client-gen: spec
 	swagger generate client -f ./api/swagger.yaml -t ./cmd/client
 	swagger generate cli -f ./api/swagger.yaml -t ./cmd/client/cli
+
+migrate-status:
+	goose postgres " host=$(DB_HOST) port=$(DB_PORT) user=$(DB_USER) password=$(DB_PASS) dbname=$(DB_NAME) sslmode=disable" status
+
+migrate: migrate-status
+	goose -dir ./migrations postgres " host=$(DB_HOST) port=$(DB_PORT) user=$(DB_USER) password=$(DB_PASS) dbname=$(DB_NAME) sslmode=disable" up

@@ -6,10 +6,10 @@ const (
 )
 
 type Printer struct {
-	apiKey      string `json:"api_key,omitempty"`
-	name        string `json:"name,omitempty"`
-	pointId     int    `json:"point_id,omitempty"`
-	printerType int    `json:"printer_type,omitempty"`
+	apiKey      string
+	name        string
+	pointId     int
+	printerType int
 }
 
 func (p Printer) ApiKey() string {

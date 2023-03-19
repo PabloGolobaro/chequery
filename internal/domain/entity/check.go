@@ -1,12 +1,12 @@
 package entity
 
 type OrderCheck struct {
-	id        int    `json:"id,omitempty"`
-	printerId string `json:"printer_id,omitempty"`
-	order     string `json:"order"`
-	status    string `json:"status,omitempty"`
-	filePath  string `json:"file_path,omitempty"`
-	checkType int    `json:"check_type,omitempty"`
+	id        int
+	printerId string
+	order     string
+	status    string
+	filePath  string
+	checkType int
 }
 
 func (c OrderCheck) Id() int {
