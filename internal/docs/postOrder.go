@@ -13,7 +13,7 @@ import "github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
 //     Deprecated: false
 //
 //     Responses:
-//       200: orderCreateResponse
+//       201: orderCreateResponse
 //       default: genericError
 
 // The ID of a point restaurant

@@ -11,7 +11,7 @@ func prepareCreate(check entity.OrderCheck) (string, []interface{}, error) {
 	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 	rawQuery := psqlSq.Insert(checkTable).Columns("printer_id", "check_order", "status", "check_type").
-		Values(check.PrinterId(), check.Order(), check.Status(), check.CheckType())
+		Values(check.GetPrinterId(), check.GetOrder(), check.GetStatus(), check.GetCheckType())
 
 	return rawQuery.ToSql()
 }

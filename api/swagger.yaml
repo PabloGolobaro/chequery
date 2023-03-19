@@ -190,7 +190,7 @@ paths:
                   schema:
                     $ref: '#/definitions/OrderCreateRequest'
             responses:
-                "200":
+                "201":
                     $ref: '#/responses/orderCreateResponse'
                 default:
                     $ref: '#/responses/genericError'

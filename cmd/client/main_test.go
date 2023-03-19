@@ -34,7 +34,7 @@ func TestOrderCreation(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	assert.Equal(t, "200", createOrder.Code())
+	assert.Equal(t, 201, createOrder.Code())
 	t.Log(createOrder.String())
 
 }

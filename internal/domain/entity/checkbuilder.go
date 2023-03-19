@@ -47,11 +47,11 @@ func (b *CheckBuilder) SetCheckType(checkType int) *CheckBuilder {
 
 func (b CheckBuilder) Build() OrderCheck {
 	return OrderCheck{
-		id:        b.id,
-		printerId: b.printerId,
-		order:     b.order,
-		status:    b.status,
-		filePath:  b.filePath,
-		checkType: b.checkType,
+		Id:        b.id,
+		PrinterId: b.printerId,
+		Order:     b.order,
+		Status:    b.status,
+		FilePath:  b.filePath,
+		CheckType: b.checkType,
 	}
 }

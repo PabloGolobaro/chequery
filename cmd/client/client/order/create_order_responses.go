@@ -27,8 +27,8 @@ type CreateOrderReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *CreateOrderReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-	case 200:
-		result := NewCreateOrderOK()
+	case 201:
+		result := NewCreateOrderCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -45,63 +45,63 @@ func (o *CreateOrderReader) ReadResponse(response runtime.ClientResponse, consum
 	}
 }
 
-// NewCreateOrderOK creates a CreateOrderOK with default headers values
-func NewCreateOrderOK() *CreateOrderOK {
-	return &CreateOrderOK{}
+// NewCreateOrderCreated creates a CreateOrderCreated with default headers values
+func NewCreateOrderCreated() *CreateOrderCreated {
+	return &CreateOrderCreated{}
 }
 
 /*
-CreateOrderOK describes a response with status code 200, with default header values.
+CreateOrderCreated describes a response with status code 201, with default header values.
 
 List of created checks IDs
 */
-type CreateOrderOK struct {
+type CreateOrderCreated struct {
 	Payload *models.OrderCreateResponse
 }
 
-// IsSuccess returns true when this create order o k response has a 2xx status code
-func (o *CreateOrderOK) IsSuccess() bool {
+// IsSuccess returns true when this create order created response has a 2xx status code
+func (o *CreateOrderCreated) IsSuccess() bool {
 	return true
 }
 
-// IsRedirect returns true when this create order o k response has a 3xx status code
-func (o *CreateOrderOK) IsRedirect() bool {
+// IsRedirect returns true when this create order created response has a 3xx status code
+func (o *CreateOrderCreated) IsRedirect() bool {
 	return false
 }
 
-// IsClientError returns true when this create order o k response has a 4xx status code
-func (o *CreateOrderOK) IsClientError() bool {
+// IsClientError returns true when this create order created response has a 4xx status code
+func (o *CreateOrderCreated) IsClientError() bool {
 	return false
 }
 
-// IsServerError returns true when this create order o k response has a 5xx status code
-func (o *CreateOrderOK) IsServerError() bool {
+// IsServerError returns true when this create order created response has a 5xx status code
+func (o *CreateOrderCreated) IsServerError() bool {
 	return false
 }
 
-// IsCode returns true when this create order o k response a status code equal to that given
-func (o *CreateOrderOK) IsCode(code int) bool {
-	return code == 200
+// IsCode returns true when this create order created response a status code equal to that given
+func (o *CreateOrderCreated) IsCode(code int) bool {
+	return code == 201
 }
 
-// Code gets the status code for the create order o k response
-func (o *CreateOrderOK) Code() int {
-	return 200
+// Code gets the status code for the create order created response
+func (o *CreateOrderCreated) Code() int {
+	return 201
 }
 
-func (o *CreateOrderOK) Error() string {
-	return fmt.Sprintf("[POST /order][%d] createOrderOK  %+v", 200, o.Payload)
+func (o *CreateOrderCreated) Error() string {
+	return fmt.Sprintf("[POST /order][%d] createOrderCreated  %+v", 201, o.Payload)
 }
 
-func (o *CreateOrderOK) String() string {
-	return fmt.Sprintf("[POST /order][%d] createOrderOK  %+v", 200, o.Payload)
+func (o *CreateOrderCreated) String() string {
+	return fmt.Sprintf("[POST /order][%d] createOrderCreated  %+v", 201, o.Payload)
 }
 
-func (o *CreateOrderOK) GetPayload() *models.OrderCreateResponse {
+func (o *CreateOrderCreated) GetPayload() *models.OrderCreateResponse {
 	return o.Payload
 }
 
-func (o *CreateOrderOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *CreateOrderCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.OrderCreateResponse)
 

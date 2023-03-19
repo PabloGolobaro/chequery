@@ -1,6 +1,7 @@
 package check
 
 import (
+	"context"
 	"github.com/jmoiron/sqlx"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"github.com/pablogolobaro/chequery/internal/domain/services"
@@ -47,7 +48,7 @@ func (s storage) Get(id int) (entity.OrderCheck, error) {
 		return check, err
 	}
 
-	err = s.dbClient.Select(&check, sql, args)
+	err = s.dbClient.Select(&check, sql, args...)
 	if err != nil {
 		return check, err
 	}
@@ -65,17 +66,28 @@ func (s storage) Create(check entity.OrderCheck) (int, error) {
 		return 0, nil
 	}
 
-	result, err := s.dbClient.Exec(sql, args)
-	if err != nil {
-		return 0, nil
-	}
-
-	lastInsertId, err := result.LastInsertId()
+	tx, err := s.dbClient.BeginTx(context.Background(), nil)
 	if err != nil {
 		return 0, err
 	}
 
-	return int(lastInsertId), nil
+	_, err = tx.Exec(sql, args...)
+	if err != nil {
+		return 0, nil
+	}
+
+	var lastInsertId int
+	err = tx.QueryRow("SELECT lastval()").Scan(&lastInsertId)
+	if err != nil {
+		return 0, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, err
+	}
+
+	return lastInsertId, nil
 }
 
 func (s storage) GetAllGeneratedChecks() ([]entity.OrderCheck, error) {
@@ -85,7 +97,7 @@ func (s storage) GetAllGeneratedChecks() ([]entity.OrderCheck, error) {
 		return nil, err
 	}
 
-	err = s.dbClient.Select(&checks, sql, args)
+	err = s.dbClient.Select(&checks, sql, args...)
 	if err != nil {
 		return nil, err
 	}

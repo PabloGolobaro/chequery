@@ -28,7 +28,7 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateOrder(params *CreateOrderParams, opts ...ClientOption) (*CreateOrderOK, error)
+	CreateOrder(params *CreateOrderParams, opts ...ClientOption) (*CreateOrderCreated, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -38,7 +38,7 @@ CreateOrder creates checks from new order
 
 This will create new checks in db and starts generating pdf files from it.
 */
-func (a *Client) CreateOrder(params *CreateOrderParams, opts ...ClientOption) (*CreateOrderOK, error) {
+func (a *Client) CreateOrder(params *CreateOrderParams, opts ...ClientOption) (*CreateOrderCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateOrderParams()
@@ -63,7 +63,7 @@ func (a *Client) CreateOrder(params *CreateOrderParams, opts ...ClientOption) (*
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*CreateOrderOK)
+	success, ok := result.(*CreateOrderCreated)
 	if ok {
 		return success, nil
 	}

@@ -12,7 +12,7 @@ func (c checkService) GeneratePDFFile(ctx context.Context, check entity.OrderChe
 		return err
 	}
 
-	err = c.checkStorage.UpdateStatusGeneratedAndFilePath(check.Id(), filePath)
+	err = c.checkStorage.UpdateStatusGeneratedAndFilePath(check.GetId(), filePath)
 	if err != nil {
 		return err
 	}
@@ -112,7 +112,7 @@ func (c checkService) GetCheckFilePath(ctx context.Context, checkId int) (string
 			if err != nil {
 				errs <- err
 			}
-			res <- generatedChecks.FilePath()
+			res <- generatedChecks.GetFilePath()
 		}
 	}()
 

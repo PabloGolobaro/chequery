@@ -5,7 +5,6 @@ import (
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
 	"go.uber.org/zap"
-	"log"
 )
 
 type CheckService interface {
@@ -31,7 +30,7 @@ func NewCheckUseCase(log *zap.SugaredLogger, checkService CheckService, printerS
 }
 
 func (c checkUseCase) GetGeneratedCheckIDs(ctx context.Context) (check.GeneratedChecksResponse, error) {
-	var ids = []int{}
+	var ids []int
 
 	generatedChecks, err := c.checkService.GetGeneratedChecks(ctx)
 	if err != nil {
@@ -39,7 +38,7 @@ func (c checkUseCase) GetGeneratedCheckIDs(ctx context.Context) (check.Generated
 	}
 
 	for _, generatedCheck := range generatedChecks {
-		ids = append(ids, generatedCheck.Id())
+		ids = append(ids, generatedCheck.GetId())
 	}
 
 	return check.GeneratedChecksResponse{IDs: ids}, nil
@@ -57,28 +56,30 @@ func (c checkUseCase) SetChecksStatusPrinted(ctx context.Context, checkIDs []int
 func (c checkUseCase) CreateChecks(ctx context.Context, order entity.OrderDetails) (ids []int, err error) {
 	printers, err := c.printerService.GetPrintersByPoint(ctx, order.PointId())
 	if err != nil {
+		c.log.Errorw("Order.Usecases.CreateChecks.printerService.GetPrintersByPoint", "error: ", err, "order", order)
 		return nil, err
 	}
 
 	for _, printer := range printers {
 
-		orderCheck := entity.NewCheckBuilder().SetPrinterId(printer.ApiKey()).SetCheckType(printer.PrinterType()).SetOrder(order.Details()).Build()
+		orderCheck := entity.NewCheckBuilder().SetPrinterId(printer.GetApiKey()).SetCheckType(printer.GetPrinterType()).SetOrder(order.Details()).Build()
 
 		orderCheck, err = c.checkService.CreateCheck(ctx, orderCheck)
 		if err != nil {
+			c.log.Errorw("Order.Usecases.CreateChecks.checkService.CreateCheck", "error: ", err, "orderCheck", orderCheck)
 			return nil, err
 		}
 
 		go func(orderCheck entity.OrderCheck) {
 			err := c.checkService.GeneratePDFFile(context.Background(), orderCheck)
 			if err != nil {
-				log.Println("error generating pdf file: ", err)
+				c.log.Errorw("Order.Usecases.checkService.GeneratePDFFile", "error: ", err, "orderCheck", orderCheck)
 
 				return
 			}
 		}(orderCheck)
 
-		ids = append(ids, orderCheck.Id())
+		ids = append(ids, orderCheck.GetId())
 	}
 
 	return

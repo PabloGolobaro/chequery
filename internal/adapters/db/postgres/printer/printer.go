@@ -24,7 +24,7 @@ func (p printerStorage) GetAll() (printers []entity.Printer, err error) {
 		return nil, err
 	}
 
-	err = p.dbClient.Select(&printers, sql, args)
+	err = p.dbClient.Select(&printers, sql, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -35,11 +35,13 @@ func (p printerStorage) GetAll() (printers []entity.Printer, err error) {
 func (p printerStorage) GetByPoint(pointID int) (printers []entity.Printer, err error) {
 	sql, args, err := prepareGetByPoint(pointID)
 	if err != nil {
+
 		return nil, err
 	}
 
-	err = p.dbClient.Select(&printers, sql, args)
+	err = p.dbClient.Select(&printers, sql, args...)
 	if err != nil {
+
 		return nil, err
 	}
 
