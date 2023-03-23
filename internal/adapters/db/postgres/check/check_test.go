@@ -39,6 +39,11 @@ func Test_storage_Create(t *testing.T) {
 				return
 			}
 			t.Log(got)
+			_, err = s.dbClient.Exec("delete from checks where id = $1", got)
+			if err != nil {
+				t.Log(err)
+				return
+			}
 		})
 	}
 }

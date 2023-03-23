@@ -34,7 +34,7 @@ func TestOrderCreation(t *testing.T) {
 		Context: context.Background(),
 		PointID: 1,
 		Body: &models.OrderCreateRequest{
-			Order: "{\"meat\":\"25kg\"}",
+			Order: "{\"Vegetables\":\"100g\",\"meat\":\"25kg\"}",
 		},
 	})
 	if err != nil {

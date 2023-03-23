@@ -12,8 +12,10 @@ export SERVER_PORT := 80
 
 up:
 	docker-compose up -d
-dev: up
+server: up
 	go run ./cmd/server
+client:
+	go run ./cmd/client
 
 spec:
 	swagger generate spec -m -w ./cmd/server -o ./api/swagger.yaml
@@ -21,11 +23,14 @@ swagger: spec
 	swagger serve -F=swagger ./api/swagger.yaml
 
 lint:
-	@GO111MODULE=on golangci-lint run ./metr-checker/... -v
+	golangci-lint run ./internal/... -v
 test:
-	go test ./...
-build: lint test
-	go build ./cmd/server
+	go test ./internal/...
+	go test ./pkg/...
+build:  lint test
+	go build -o ./bin/server.exe ./cmd/server
+	go build -o ./bin/client.exe ./cmd/client
+
 
 path:
 	path D:\Go\Swagger;%PATH%

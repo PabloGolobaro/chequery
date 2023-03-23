@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"context"
 	"github.com/pablogolobaro/chequery/cmd/client/client"
 	"github.com/pablogolobaro/chequery/cmd/client/client/check"
 	"log"
@@ -19,12 +21,17 @@ func NewWorker(client *client.CheckGeneratingAPI) *Worker {
 }
 
 func (w Worker) Start() {
-	ticker := time.NewTicker(time.Second * 1)
+
+	ticker := time.NewTicker(time.Second * 3)
 
 	for {
 		select {
 		case <-ticker.C:
-			w.client.Check.GetGenerated(nil)
+			err := w.handleChecks()
+			if err != nil {
+				log.Println(err)
+			}
+
 		case <-w.stopCh:
 			return
 		}
@@ -42,27 +49,36 @@ func (w Worker) handleChecks() error {
 	}
 
 	successIds := make([]int64, 0, len(generated.Payload.IDs))
-
+	var mu sync.Mutex
 	var wg sync.WaitGroup
 	for _, id := range generated.Payload.IDs {
 		wg.Add(1)
 		go func(id int64) {
-			_, err := w.client.Check.GetPDF(&check.GetPDFParams{CheckID: id}, nil)
+			defer wg.Done()
+			buffer := &bytes.Buffer{}
+
+			reqParam := &check.GetPDFParams{CheckID: id}
+			_, err := w.client.Check.GetPDF(reqParam.WithTimeout(time.Second*5), buffer)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 
 			log.Printf("Sending to printer check by id №%v", id)
-			//log.Printf("Length of file: %v", getPDF.Payload.Header.Size)
-
-			successIds = append(successIds)
+			log.Printf("Length of file: %v", buffer.Len())
+			mu.Lock()
+			successIds = append(successIds, id)
+			mu.Unlock()
 		}(id)
 	}
 	wg.Wait()
+	if len(successIds) == 0 {
 
-	_, err = w.client.Check.UpdateChecksStatus(&check.UpdateChecksStatusParams{IDs: successIds})
+		return nil
+	}
+	_, err = w.client.Check.UpdateChecksStatus(&check.UpdateChecksStatusParams{IDs: successIds, Context: context.Background()})
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 

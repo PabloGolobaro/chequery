@@ -36,7 +36,7 @@ func Test_checkHandler_GetGeneratedChecks(t *testing.T) {
 	c := e.NewContext(req, rec)
 
 	if assert.NoError(t, handler.GetGeneratedChecks(c)) {
-		assert.Equal(t, "{\"IDs\":[1,3]}\n", rec.Body.String())
+		assert.Equal(t, "{\"ids\":[1,3]}\n", rec.Body.String())
 	}
 }
 
