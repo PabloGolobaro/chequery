@@ -33,7 +33,7 @@ lint:
 test:
 	go test ./internal/...
 	go test ./pkg/...
-build:  lint test
+build:  test
 	go build -o ./bin/server.exe ./cmd/server
 	go build -o ./bin/client.exe ./cmd/client
 

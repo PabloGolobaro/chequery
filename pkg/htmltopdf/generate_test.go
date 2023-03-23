@@ -4,14 +4,19 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
-	"github.com/pablogolobaro/chequery/pkg/templ"
+	"html/template"
+
 	"path/filepath"
 	"strconv"
 	"testing"
 )
 
-const pdfFilesPath = "./testdata/pdf"
-const testPath = "/testdata"
+const (
+	checkTemplateName = "checkbase"
+	templateDirGlob   = "./testdata/*.html"
+	pdfFilesPath      = "./testdata/pdf"
+	testPath          = "/testdata"
+)
 
 func testOrder() entity.OrderCheck {
 	m := map[string]interface{}{"vegetables": 1, "pork": 3}
@@ -24,11 +29,7 @@ func testOrder() entity.OrderCheck {
 }
 
 func TestGeneratePDF(t *testing.T) {
-	temp, err := templ.ParseTemplate("./testdata")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	temp := template.Must(template.ParseGlob(templateDirGlob))
 
 	var b bytes.Buffer
 
@@ -40,7 +41,7 @@ func TestGeneratePDF(t *testing.T) {
 		"order":     orderCheck.GetOrder(),
 	}
 
-	err = temp.ExecuteTemplate(&b, "base", m)
+	err := temp.ExecuteTemplate(&b, checkTemplateName, m)
 	if err != nil {
 		t.Error(err)
 		return

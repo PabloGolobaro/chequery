@@ -7,15 +7,16 @@ import (
 	"github.com/pablogolobaro/chequery/internal/domain/services"
 	"github.com/pablogolobaro/chequery/internal/domain/usecases"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/health"
+	"github.com/pablogolobaro/chequery/internal/handlers/web"
 	"github.com/pablogolobaro/chequery/pkg/htmltopdf"
+	"html/template"
 
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
 	"github.com/pablogolobaro/chequery/pkg/psql"
-	"github.com/pablogolobaro/chequery/pkg/templ"
 )
 
-const templateDir = "./static/templates"
+const templateDirGlob = "./static/templates/*.html"
 const exePath = "bin"
 
 func (a *Application) Bootstrap(conf config.Config) error {
@@ -26,17 +27,16 @@ func (a *Application) Bootstrap(conf config.Config) error {
 
 	postgresStorages := postgres.New(repository)
 
-	template, err := templ.ParseTemplate(templateDir)
-	if err != nil {
-		return err
-	}
+	temple := template.Must(template.ParseGlob(templateDirGlob))
+
+	a.t = temple
 
 	err = htmltopdf.FindWKHTMLTOPDF(exePath)
 	if err != nil {
 		return err
 	}
 
-	pdfStorage := pdf.NewPdfStorage(template)
+	pdfStorage := pdf.NewPdfStorage(temple)
 
 	printerService := services.NewPrinterService(a.log, postgresStorages.PrinterStorage)
 
@@ -49,6 +49,8 @@ func (a *Application) Bootstrap(conf config.Config) error {
 	a.orderHandler = order.NewOrderHandler(a.log, useCases)
 
 	a.healthHandler = health.NewHealthCheckHandler()
+
+	a.uiHandler = web.NewUiHandler(a.log)
 
 	return nil
 }

@@ -10,6 +10,7 @@ import (
 )
 
 const dirPath string = "./media/pdf"
+const checkTemplateName = "checkbase"
 
 type pdfStorage struct {
 	template *template.Template
@@ -24,7 +25,7 @@ func (p pdfStorage) GenerateCheckPDF(check entity.OrderCheck) (string, error) {
 
 	var b bytes.Buffer
 
-	err := p.template.ExecuteTemplate(&b, "base", check)
+	err := p.template.ExecuteTemplate(&b, checkTemplateName, check)
 	if err != nil {
 		return "", err
 	}
