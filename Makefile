@@ -10,9 +10,15 @@ export SERVER_PORT := 80
 #
 #REGISTRY := pablogolobar/order_server:$(VERSION)
 
+migrate-status:
+	goose postgres " host=$(DB_HOST) port=$(DB_PORT) user=$(DB_USER) password=$(DB_PASS) dbname=$(DB_NAME) sslmode=disable" status
+
+migrate: migrate-status
+	goose -dir ./migrations postgres " host=$(DB_HOST) port=$(DB_PORT) user=$(DB_USER) password=$(DB_PASS) dbname=$(DB_NAME) sslmode=disable" up
+
 up:
 	docker-compose up -d
-server: up
+server: up migrate
 	go run ./cmd/server
 client:
 	go run ./cmd/client
@@ -36,10 +42,3 @@ path:
 	path D:\Go\Swagger;%PATH%
 client-gen: spec
 	swagger generate client -f ./api/swagger.yaml -t ./cmd/client
-
-
-migrate-status:
-	goose postgres " host=$(DB_HOST) port=$(DB_PORT) user=$(DB_USER) password=$(DB_PASS) dbname=$(DB_NAME) sslmode=disable" status
-
-migrate: migrate-status
-	goose -dir ./migrations postgres " host=$(DB_HOST) port=$(DB_PORT) user=$(DB_USER) password=$(DB_PASS) dbname=$(DB_NAME) sslmode=disable" up
