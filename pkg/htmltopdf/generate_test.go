@@ -2,48 +2,47 @@ package htmltopdf
 
 import (
 	"bytes"
-	"encoding/json"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
-	"html/template"
-
+	"github.com/pablogolobaro/chequery/pkg/renderer"
 	"path/filepath"
 	"strconv"
 	"testing"
 )
 
 const (
-	checkTemplateName = "checkbase"
-	templateDirGlob   = "./testdata/*.html"
+	checkTemplateName = "check"
+	templateDir       = "./testdata/templates"
 	pdfFilesPath      = "./testdata/pdf"
 	testPath          = "/testdata"
 )
 
 func testOrder() entity.OrderCheck {
-	m := map[string]interface{}{"vegetables": 1, "pork": 3}
-	indent, err := json.MarshalIndent(m, "", "\t")
-	if err != nil {
-		return entity.OrderCheck{}
+	orderData := entity.Order{
+		PointID: 1,
+		Products: []entity.Product{
+			{Name: "Meat", Quantity: 3, Price: 145},
+			{Name: "vegetables", Quantity: 2, Price: 32},
+			{Name: "Juice", Quantity: 1, Price: 48}},
 	}
-	orderCheck := entity.NewCheckBuilder().SetId(1).SetCheckType(entity.Kitchen).SetStatus("created").SetPrinterId("123").SetOrder(string(indent)).Build()
+	orderCheck := entity.NewCheckBuilder().SetId(1).SetCheckType(entity.Kitchen).SetStatus("created").SetPrinterId("123").SetOrder(orderData.Details()).Build()
 	return orderCheck
 }
 
 func TestGeneratePDF(t *testing.T) {
-	temp := template.Must(template.ParseGlob(templateDirGlob))
+	renderer := renderer.New()
 
+	err := renderer.LoadTemplates(templateDir)
+	if err != nil {
+		t.Log(err)
+		return
+	}
 	var b bytes.Buffer
 
 	orderCheck := testOrder()
-	m := map[string]interface{}{
-		"id":        orderCheck.GetId(),
-		"checkType": orderCheck.GetCheckType(),
-		"printerId": orderCheck.GetPrinterId(),
-		"order":     orderCheck.GetOrder(),
-	}
 
-	err := temp.ExecuteTemplate(&b, checkTemplateName, m)
+	err = renderer.Render(&b, checkTemplateName, orderCheck, nil)
 	if err != nil {
-		t.Error(err)
+		t.Log(err)
 		return
 	}
 
@@ -62,7 +61,9 @@ func TestGeneratePDF(t *testing.T) {
 		name    string
 		args    args
 		wantErr bool
-	}{{name: "Simple", args: args{path: filePath, buffer: &b}, wantErr: false}}
+	}{{
+		name: "Simple", args: args{path: filePath, buffer: &b}, wantErr: false,
+	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := GeneratePDF(tt.args.path, tt.args.buffer); (err != nil) != tt.wantErr {

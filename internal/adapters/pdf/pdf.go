@@ -5,19 +5,19 @@ import (
 	"fmt"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"github.com/pablogolobaro/chequery/pkg/htmltopdf"
-	"html/template"
+	"github.com/pablogolobaro/chequery/pkg/renderer"
 	"path/filepath"
 )
 
 const dirPath string = "./media/pdf"
-const checkTemplateName = "checkbase"
+const checkTemplateName = "check"
 
 type pdfStorage struct {
-	template *template.Template
+	t *renderer.Template
 }
 
-func NewPdfStorage(template *template.Template) *pdfStorage {
-	return &pdfStorage{template: template}
+func NewPdfStorage(t *renderer.Template) *pdfStorage {
+	return &pdfStorage{t: t}
 }
 
 func (p pdfStorage) GenerateCheckPDF(check entity.OrderCheck) (string, error) {
@@ -25,7 +25,7 @@ func (p pdfStorage) GenerateCheckPDF(check entity.OrderCheck) (string, error) {
 
 	var b bytes.Buffer
 
-	err := p.template.ExecuteTemplate(&b, checkTemplateName, check)
+	err := p.t.Render(&b, checkTemplateName, check, nil)
 	if err != nil {
 		return "", err
 	}

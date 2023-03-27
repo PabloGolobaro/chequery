@@ -14,7 +14,7 @@ const (
 )
 
 type UseCases interface {
-	CreateChecks(ctx context.Context, order entity.OrderDetails) (ids []int, err error)
+	CreateChecks(ctx context.Context, order entity.Order) (ids []int, err error)
 }
 
 type orderHandler struct {

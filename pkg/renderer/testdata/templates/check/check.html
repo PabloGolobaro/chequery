@@ -1,0 +1,7 @@
+{{define "title"}} Order № {{.Id}}
+{{end}}
+{{define "content"}}
+    <p>Type - {{.CheckType}}</p>
+    <p>Printer ID - {{.PrinterId}}</p>
+    {{.Order}}
+{{end}}

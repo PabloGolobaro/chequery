@@ -14,7 +14,6 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 
 	"github.com/pablogolobaro/chequery/cmd/client/models"
 )
@@ -66,11 +65,6 @@ type CreateOrderParams struct {
 
 	// Body.
 	Body *models.OrderCreateRequest
-
-	// PointID.
-	//
-	// Format: int64
-	PointID int64
 
 	timeout    time.Duration
 	Context    context.Context
@@ -136,17 +130,6 @@ func (o *CreateOrderParams) SetBody(body *models.OrderCreateRequest) {
 	o.Body = body
 }
 
-// WithPointID adds the pointID to the create order params
-func (o *CreateOrderParams) WithPointID(pointID int64) *CreateOrderParams {
-	o.SetPointID(pointID)
-	return o
-}
-
-// SetPointID adds the pointId to the create order params
-func (o *CreateOrderParams) SetPointID(pointID int64) {
-	o.PointID = pointID
-}
-
 // WriteToRequest writes these params to a swagger request
 func (o *CreateOrderParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -156,16 +139,6 @@ func (o *CreateOrderParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.R
 	var res []error
 	if o.Body != nil {
 		if err := r.SetBodyParam(o.Body); err != nil {
-			return err
-		}
-	}
-
-	// query param point_id
-	qrPointID := o.PointID
-	qPointID := swag.FormatInt64(qrPointID)
-	if qPointID != "" {
-
-		if err := r.SetQueryParam("point_id", qPointID); err != nil {
 			return err
 		}
 	}

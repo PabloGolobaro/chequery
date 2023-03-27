@@ -81,11 +81,6 @@ func (o *UpdateChecksStatusOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the update checks status o k response
-func (o *UpdateChecksStatusOK) Code() int {
-	return 200
-}
-
 func (o *UpdateChecksStatusOK) Error() string {
 	return fmt.Sprintf("[PUT /check][%d] updateChecksStatusOK  %+v", 200, o.Payload)
 }
@@ -145,11 +140,6 @@ func (o *UpdateChecksStatusInternalServerError) IsServerError() bool {
 // IsCode returns true when this update checks status internal server error response a status code equal to that given
 func (o *UpdateChecksStatusInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the update checks status internal server error response
-func (o *UpdateChecksStatusInternalServerError) Code() int {
-	return 500
 }
 
 func (o *UpdateChecksStatusInternalServerError) Error() string {

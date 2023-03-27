@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -18,16 +19,69 @@ import (
 type OrderCreateRequest struct {
 
 	// order
-	Order string `json:"order,omitempty"`
+	Order *Order `json:"order,omitempty"`
 }
 
 // Validate validates this order create request
 func (m *OrderCreateRequest) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateOrder(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this order create request based on context it is used
+func (m *OrderCreateRequest) validateOrder(formats strfmt.Registry) error {
+	if swag.IsZero(m.Order) { // not required
+		return nil
+	}
+
+	if m.Order != nil {
+		if err := m.Order.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("order")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("order")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this order create request based on the context it is used
 func (m *OrderCreateRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateOrder(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *OrderCreateRequest) contextValidateOrder(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Order != nil {
+		if err := m.Order.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("order")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("order")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 

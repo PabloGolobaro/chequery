@@ -16,14 +16,6 @@ import "github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
 //       201: orderCreateResponse
 //       default: genericError
 
-// The ID of a point restaurant
-// swagger:parameters createOrder
-type PointIDParam struct {
-	// in:query
-	// required: true
-	PointId int `json:"point_id"`
-}
-
 // JSON of unknown type with order information
 // swagger:parameters createOrder
 type WrapperOrderCreateRequest struct {

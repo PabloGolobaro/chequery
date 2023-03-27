@@ -23,25 +23,30 @@ func TestLiveProbe(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	assert.Equal(t, 200, probeOK.Code())
+	assert.Equal(t, true, probeOK.IsCode(200))
 	assert.Equal(t, "I'm alive", *probeOK.Payload.Message)
 
 }
 
 func TestOrderCreation(t *testing.T) {
+	requestOrder := &models.Order{
+		PointID: 1,
+		Products: []*models.Product{
+			{Name: "Meat", Quantity: 3, Price: 145},
+			{Name: "vegetables", Quantity: 2, Price: 32},
+			{Name: "Juice", Quantity: 1, Price: 48}},
+	}
+
 	apiClient := client.NewHTTPClient(nil)
 	createOrder, err := apiClient.Order.CreateOrder(&order.CreateOrderParams{
+		Body:    &models.OrderCreateRequest{Order: requestOrder},
 		Context: context.Background(),
-		PointID: 1,
-		Body: &models.OrderCreateRequest{
-			Order: "{\"Vegetables\":\"100g\",\"meat\":\"25kg\"}",
-		},
 	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	assert.Equal(t, 201, createOrder.Code())
+	assert.Equal(t, true, createOrder.IsCode(201))
 	t.Log(createOrder.String())
 
 }
@@ -53,7 +58,7 @@ func TestGetGenerated(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	assert.Equal(t, 200, getGenerated.Code())
+	assert.Equal(t, true, getGenerated.IsCode(200))
 	t.Log(getGenerated.String())
 
 }
@@ -65,7 +70,7 @@ func TestUpdateStatus(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	assert.Equal(t, 200, getGenerated.Code())
+	assert.Equal(t, true, getGenerated.IsCode(200))
 	t.Log(getGenerated.String())
 }
 
@@ -80,7 +85,7 @@ func TestGetPDF(t *testing.T) {
 	if err != nil {
 		t.Log(err.Error())
 	}
-	assert.Equal(t, 200, getPDF.Code())
+	assert.Equal(t, true, getPDF.IsCode(200))
 	create, err := os.Create("example.pdf")
 	if err != nil {
 		t.Error(err)

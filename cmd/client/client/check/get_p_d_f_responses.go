@@ -85,11 +85,6 @@ func (o *GetPDFOK) IsCode(code int) bool {
 	return code == 200
 }
 
-// Code gets the status code for the get p d f o k response
-func (o *GetPDFOK) Code() int {
-	return 200
-}
-
 func (o *GetPDFOK) Error() string {
 	return fmt.Sprintf("[GET /check/{check_id}/pdf][%d] getPDFOK  %+v", 200, o.Payload)
 }
@@ -149,11 +144,6 @@ func (o *GetPDFInternalServerError) IsServerError() bool {
 // IsCode returns true when this get p d f internal server error response a status code equal to that given
 func (o *GetPDFInternalServerError) IsCode(code int) bool {
 	return code == 500
-}
-
-// Code gets the status code for the get p d f internal server error response
-func (o *GetPDFInternalServerError) Code() int {
-	return 500
 }
 
 func (o *GetPDFInternalServerError) Error() string {

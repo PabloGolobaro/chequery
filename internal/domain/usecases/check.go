@@ -54,7 +54,7 @@ func (c checkUseCase) SetChecksStatusPrinted(ctx context.Context, checkIDs []int
 	return c.checkService.UpdateChecksStatus(ctx, checkIDs)
 }
 
-func (c checkUseCase) CreateChecks(ctx context.Context, order entity.OrderDetails) (ids []int, err error) {
+func (c checkUseCase) CreateChecks(ctx context.Context, order entity.Order) (ids []int, err error) {
 	printers, err := c.printerService.GetPrintersByPoint(ctx, order.PointId())
 	if err != nil {
 		c.log.Errorw("Order.Usecases.CreateChecks.printerService.GetPrintersByPoint", "error: ", err, "order", order)

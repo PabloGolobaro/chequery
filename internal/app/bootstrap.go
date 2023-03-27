@@ -6,17 +6,16 @@ import (
 	"github.com/pablogolobaro/chequery/internal/config"
 	"github.com/pablogolobaro/chequery/internal/domain/services"
 	"github.com/pablogolobaro/chequery/internal/domain/usecases"
+	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/health"
+	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
 	"github.com/pablogolobaro/chequery/internal/handlers/web"
 	"github.com/pablogolobaro/chequery/pkg/htmltopdf"
-	"html/template"
-
-	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
-	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
 	"github.com/pablogolobaro/chequery/pkg/psql"
+	"github.com/pablogolobaro/chequery/pkg/renderer"
 )
 
-const templateDirGlob = "./static/templates/*.html"
+const templateDir = "./static/templates"
 const exePath = "bin"
 
 func (a *Application) Bootstrap(conf config.Config) error {
@@ -27,16 +26,19 @@ func (a *Application) Bootstrap(conf config.Config) error {
 
 	postgresStorages := postgres.New(repository)
 
-	temple := template.Must(template.ParseGlob(templateDirGlob))
+	a.renderer = renderer.New()
 
-	a.t = temple
+	err = a.renderer.LoadTemplates(templateDir)
+	if err != nil {
+		return err
+	}
 
 	err = htmltopdf.FindWKHTMLTOPDF(exePath)
 	if err != nil {
 		return err
 	}
 
-	pdfStorage := pdf.NewPdfStorage(temple)
+	pdfStorage := pdf.NewPdfStorage(a.renderer)
 
 	printerService := services.NewPrinterService(a.log, postgresStorages.PrinterStorage)
 
@@ -50,7 +52,7 @@ func (a *Application) Bootstrap(conf config.Config) error {
 
 	a.healthHandler = health.NewHealthCheckHandler()
 
-	a.uiHandler = web.NewUiHandler(a.log)
+	a.uiHandler = web.NewUiHandler(a.log, useCases)
 
 	return nil
 }

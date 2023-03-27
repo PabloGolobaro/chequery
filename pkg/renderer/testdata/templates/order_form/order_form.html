@@ -1,0 +1,14 @@
+{{define "content"}}
+    <form action="/order" method="post">
+        <div class="mb-3">
+            <label for="inputPoint" class="form-label">Point</label>
+            <input type="number" class="form-control" id="inputPoint" aria-describedby="pointHelp">
+            <div id="pointHelp" class="form-text">The id of a restaurant where you make order.</div>
+        </div>
+        <div class="mb-3">
+            <label for="inputOrder" class="form-label">Order</label>
+            <input type="text" class="form-control" id="inputOrder">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{{end}}

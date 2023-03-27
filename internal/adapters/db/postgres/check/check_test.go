@@ -1,19 +1,20 @@
 package check
 
 import (
-	"encoding/json"
 	"github.com/jmoiron/sqlx"
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"testing"
 )
 
 func testOrder() entity.OrderCheck {
-	m := map[string]interface{}{"vegetables": 1, "pork": 3}
-	indent, err := json.MarshalIndent(m, "", "\t")
-	if err != nil {
-		return entity.OrderCheck{}
+	o := entity.Order{
+		PointID: 1,
+		Products: []entity.Product{
+			{Name: "Meat", Quantity: 3, Price: 145},
+			{Name: "vegetables", Quantity: 2, Price: 32},
+			{Name: "Juice", Quantity: 1, Price: 48}},
 	}
-	orderCheck := entity.NewCheckBuilder().SetCheckType(entity.Kitchen).SetStatus("created").SetPrinterId("111").SetOrder(string(indent)).Build()
+	orderCheck := entity.NewCheckBuilder().SetCheckType(entity.Kitchen).SetStatus("created").SetPrinterId("111").SetOrder(o.Details()).Build()
 	return orderCheck
 }
 

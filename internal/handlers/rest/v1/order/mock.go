@@ -9,7 +9,7 @@ import (
 type MockUsecases struct {
 }
 
-func (m MockUsecases) CreateChecks(ctx context.Context, order entity.OrderDetails) (ids []int, err error) {
+func (m MockUsecases) CreateChecks(ctx context.Context, order entity.Order) (ids []int, err error) {
 	return []int{1, 2}, nil
 }
 

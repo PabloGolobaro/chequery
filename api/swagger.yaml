@@ -27,11 +27,23 @@ definitions:
             - message
         type: object
         x-go-package: github.com/pablogolobaro/chequery/internal/handlers/rest/v1/health
+    Order:
+        properties:
+            point_id:
+                format: int64
+                type: integer
+                x-go-name: PointID
+            products:
+                items:
+                    $ref: '#/definitions/Product'
+                type: array
+                x-go-name: Products
+        type: object
+        x-go-package: github.com/pablogolobaro/chequery/internal/domain/entity
     OrderCreateRequest:
         properties:
             order:
-                type: string
-                x-go-name: Order
+                $ref: '#/definitions/Order'
         type: object
         x-go-package: github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order
     OrderCreateResponse:
@@ -48,6 +60,21 @@ definitions:
                 x-go-name: Ids
         type: object
         x-go-package: github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order
+    Product:
+        properties:
+            name:
+                type: string
+                x-go-name: Name
+            price:
+                format: int64
+                type: integer
+                x-go-name: Price
+            quantity:
+                format: int64
+                type: integer
+                x-go-name: Quantity
+        type: object
+        x-go-package: github.com/pablogolobaro/chequery/internal/domain/entity
 host: localhost
 info:
     contact:
@@ -150,12 +177,6 @@ paths:
             description: This will create new checks in db and starts generating pdf files from it.
             operationId: createOrder
             parameters:
-                - format: int64
-                  in: query
-                  name: point_id
-                  required: true
-                  type: integer
-                  x-go-name: PointId
                 - in: body
                   name: Body
                   schema:
