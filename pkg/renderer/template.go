@@ -10,6 +10,7 @@ import (
 )
 
 const baseTemplateName = "base"
+const snippetKey = "snippet"
 
 type Template struct {
 	templatesMap map[string]*template.Template
@@ -27,7 +28,15 @@ func (t *Template) LoadTemplates(baseTemplateDir string) error {
 
 	templateBase := template.Must(template.ParseGlob(baseTemplateDir + "/*.html"))
 
+	snippetTemplates := template.Must(template.ParseGlob(baseTemplateDir + "/snippets/*.html"))
+
+	t.templatesMap[snippetKey] = snippetTemplates
+
 	for _, contentTemplate := range contentTemplates {
+		if strings.Contains(contentTemplate, snippetKey) {
+			continue
+		}
+
 		templateName := strings.Split(filepath.Base(contentTemplate), ".")[0]
 
 		templateBaseClone, err := templateBase.Clone()
@@ -43,10 +52,15 @@ func (t *Template) LoadTemplates(baseTemplateDir string) error {
 		t.templatesMap[templateName] = resultTemplate
 	}
 
+	t.logTemplates()
+
 	return nil
 }
 
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	if strings.Contains(name, snippetKey) {
+		return t.templatesMap[snippetKey].ExecuteTemplate(w, name, data)
+	}
 	return t.templatesMap[name].ExecuteTemplate(w, baseTemplateName, data)
 }
 

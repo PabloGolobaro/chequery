@@ -15,6 +15,7 @@ type Application struct {
 	printerHandler handlers.Handler
 	healthHandler  handlers.Handler
 	uiHandler      handlers.Handler
+	authHandler    handlers.Handler
 	renderer       *renderer.Template
 }
 

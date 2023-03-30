@@ -5,16 +5,14 @@ import (
 	"github.com/pablogolobaro/chequery/internal/domain/entity"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
 	"go.uber.org/zap"
-	"io"
 	"net/http"
-	"os"
 	"strconv"
 )
 
 const (
-	makeOrderURL       = "/order"
-	addProductFormURL  = "/add_product_form"
-	addProductFormFile = "./static/templates/order_form/add_product.html"
+	makeOrderURL      = "/order"
+	addProductFormURL = "/add_product_form"
+	addProductSnippet = "snippet_add_product"
 )
 
 type uiHandler struct {
@@ -85,13 +83,5 @@ func (u *uiHandler) PostMakeOrder(c echo.Context) error {
 }
 
 func (u *uiHandler) PostAddProductForm(c echo.Context) error {
-	open, err := os.Open(addProductFormFile)
-	if err != nil {
-		return err
-	}
-	all, err := io.ReadAll(open)
-	if err != nil {
-		return err
-	}
-	return c.HTML(http.StatusOK, string(all))
+	return c.Render(http.StatusOK, addProductSnippet, nil)
 }

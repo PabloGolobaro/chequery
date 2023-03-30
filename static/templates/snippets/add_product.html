@@ -1,0 +1,25 @@
+{{define "snippet_add_product"}}
+    <div class="mb-3">
+        <div class="container text-center">
+            <div class="row align-items-start">
+                <div class="col">
+                    <label for="ProductName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="ProductName" name="name">
+                </div>
+                <div class="col">
+                    <label for="ProductPrice" class="form-label">Price</label>
+                    <input type="number" class="form-control" id="ProductPrice" name="price">
+                </div>
+                <div class="col">
+                    <label for="ProductQuantity" class="form-label">Quantity</label>
+                    <input type="number" class="form-control" id="ProductQuantity" name="quantity">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <button type="button" class="btn btn-outline-success btn-sm" hx-post="/add_product_form" hx-swap="outerHTML">Add
+            product
+        </button>
+    </div>
+{{end}}

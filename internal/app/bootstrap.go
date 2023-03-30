@@ -6,6 +6,7 @@ import (
 	"github.com/pablogolobaro/chequery/internal/config"
 	"github.com/pablogolobaro/chequery/internal/domain/services"
 	"github.com/pablogolobaro/chequery/internal/domain/usecases"
+	"github.com/pablogolobaro/chequery/internal/handlers/auth"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/health"
 	"github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
@@ -53,6 +54,8 @@ func (a *Application) Bootstrap(conf config.Config) error {
 	a.healthHandler = health.NewHealthCheckHandler()
 
 	a.uiHandler = web.NewUiHandler(a.log, useCases)
+
+	a.authHandler = auth.NewAuthHandler(a.log)
 
 	return nil
 }
