@@ -41,11 +41,13 @@ Sends generated check pdf files to client listener and updates status of generat
      JWT_SECRET = secret
 
 ### Usage:
-#### You can use app functionality via web UI at http://localhost:80 or by using api documented in swagger 2.0 format.
+#### You can use app functionality via web UI at ***http://localhost:80*** or by using api documented in swagger 2.0 format.
 #### Example built in parameters to get Auth token
 - username = "JohnSnow"
 - password = "password"
-     ``http://localhost/docs/  swagger documentation endpoint``
+- ``http://localhost/docs/  swagger documentation endpoint``
+
+
 
 
 ### Api endpoint example:
