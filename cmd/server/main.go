@@ -29,7 +29,7 @@ func main() {
 
 	logger.Info("RegisterRouter Application")
 
-	err = application.RegisterRouter()
+	err = application.RegisterRouter(conf)
 	if err != nil {
 		logger.Fatal(err)
 	}

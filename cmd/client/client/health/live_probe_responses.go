@@ -79,6 +79,11 @@ func (o *LiveProbeOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the live probe o k response
+func (o *LiveProbeOK) Code() int {
+	return 200
+}
+
 func (o *LiveProbeOK) Error() string {
 	return fmt.Sprintf("[GET /health-check][%d] liveProbeOK  %+v", 200, o.Payload)
 }
@@ -139,6 +144,11 @@ func (o *LiveProbeInternalServerError) IsServerError() bool {
 // IsCode returns true when this live probe internal server error response a status code equal to that given
 func (o *LiveProbeInternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the live probe internal server error response
+func (o *LiveProbeInternalServerError) Code() int {
+	return 500
 }
 
 func (o *LiveProbeInternalServerError) Error() string {

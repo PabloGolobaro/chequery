@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/pablogolobaro/chequery/cmd/client/client"
 	"github.com/pablogolobaro/chequery/cmd/client/client/check"
 	"log"
@@ -13,11 +14,12 @@ import (
 type Worker struct {
 	client *client.CheckGeneratingAPI
 	stopCh chan struct{}
+	token  string
 }
 
-func NewWorker(client *client.CheckGeneratingAPI) *Worker {
+func NewWorker(client *client.CheckGeneratingAPI, token string) *Worker {
 	stopCh := make(chan struct{})
-	return &Worker{client: client, stopCh: stopCh}
+	return &Worker{client: client, stopCh: stopCh, token: token}
 }
 
 func (w Worker) Start() {
@@ -43,7 +45,10 @@ func (w Worker) Stop() {
 }
 
 func (w Worker) handleChecks() error {
-	generated, err := w.client.Check.GetGenerated(nil)
+	generated, err := w.client.Check.GetGenerated(
+		nil,
+		httptransport.BearerToken(w.token),
+	)
 	if err != nil {
 		return err
 	}
@@ -58,7 +63,11 @@ func (w Worker) handleChecks() error {
 			buffer := &bytes.Buffer{}
 
 			reqParam := &check.GetPDFParams{CheckID: id}
-			_, err := w.client.Check.GetPDF(reqParam.WithTimeout(time.Second*5), buffer)
+			_, err := w.client.Check.GetPDF(
+				reqParam.WithTimeout(time.Second*5),
+				httptransport.BearerToken(w.token),
+				buffer,
+			)
 			if err != nil {
 				log.Println(err)
 				return
@@ -76,7 +85,10 @@ func (w Worker) handleChecks() error {
 
 		return nil
 	}
-	_, err = w.client.Check.UpdateChecksStatus(&check.UpdateChecksStatusParams{IDs: successIds, Context: context.Background()})
+	_, err = w.client.Check.UpdateChecksStatus(
+		&check.UpdateChecksStatusParams{IDs: successIds, Context: context.Background()},
+		httptransport.BearerToken(w.token),
+	)
 	if err != nil {
 		log.Println(err)
 		return err

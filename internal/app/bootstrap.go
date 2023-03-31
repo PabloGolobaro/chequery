@@ -55,7 +55,7 @@ func (a *Application) Bootstrap(conf config.Config) error {
 
 	a.uiHandler = web.NewUiHandler(a.log, useCases)
 
-	a.authHandler = auth.NewAuthHandler(a.log)
+	a.authHandler = auth.NewAuthHandler(a.log, conf.JWTSecret)
 
 	return nil
 }

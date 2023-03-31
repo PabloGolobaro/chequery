@@ -28,7 +28,7 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateOrder(params *CreateOrderParams, opts ...ClientOption) (*CreateOrderCreated, error)
+	CreateOrder(params *CreateOrderParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateOrderCreated, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -38,7 +38,7 @@ CreateOrder creates checks from new order
 
 This will create new checks in db and starts generating pdf files from it.
 */
-func (a *Client) CreateOrder(params *CreateOrderParams, opts ...ClientOption) (*CreateOrderCreated, error) {
+func (a *Client) CreateOrder(params *CreateOrderParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateOrderCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateOrderParams()
@@ -46,12 +46,13 @@ func (a *Client) CreateOrder(params *CreateOrderParams, opts ...ClientOption) (*
 	op := &runtime.ClientOperation{
 		ID:                 "createOrder",
 		Method:             "POST",
-		PathPattern:        "/order",
+		PathPattern:        "/api/v1/order",
 		ProducesMediaTypes: []string{"application/json", "application/pdf"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &CreateOrderReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}

@@ -5,45 +5,46 @@ import (
 	"github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/pablogolobaro/chequery/internal/config"
 	"github.com/pablogolobaro/chequery/internal/handlers/auth"
 )
 
 const (
-	jwtSecret = "secret"
-	apiUri    = "/api/v1"
+	apiUri = "/api/v1"
 )
 
-func (a *Application) RegisterRouter() error {
+func (a *Application) RegisterRouter(conf config.Config) error {
 	e := echo.New()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	config := echojwt.Config{
+	c := echojwt.Config{
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
 			return new(auth.JwtCustomClaims)
 		},
-		SigningKey: []byte(jwtSecret),
+		SigningKey: []byte(conf.JWTSecret),
 	}
-	e.Use(echojwt.WithConfig(config))
 
 	e.Static("/", "static")
 
 	e.Renderer = a.renderer
 
-	uiGroup := e.Group("")
+	openGroup := e.Group("")
 
-	a.uiHandler.Register(uiGroup)
+	a.authHandler.Register(openGroup)
 
-	apiGroup := uiGroup.Group(apiUri)
+	a.uiHandler.Register(openGroup)
 
-	a.checkHandler.Register(apiGroup)
+	a.healthHandler.Register(openGroup)
+
+	apiGroup := openGroup.Group(apiUri)
+
+	apiGroup.Use(echojwt.WithConfig(c))
 
 	a.orderHandler.Register(apiGroup)
 
-	a.healthHandler.Register(apiGroup)
-
-	a.authHandler.Register(apiGroup)
+	a.checkHandler.Register(apiGroup)
 
 	a.router = e
 

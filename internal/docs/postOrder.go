@@ -2,7 +2,7 @@ package docs
 
 import "github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
 
-// swagger:route POST /order order createOrder
+// swagger:route POST /api/v1/order order createOrder
 //
 // Create checks from new order.
 //
@@ -11,6 +11,9 @@ import "github.com/pablogolobaro/chequery/internal/handlers/rest/v1/order"
 //     Schemes: http
 //
 //     Deprecated: false
+//
+//     Security:
+//        - Bearer:
 //
 //     Responses:
 //       201: orderCreateResponse

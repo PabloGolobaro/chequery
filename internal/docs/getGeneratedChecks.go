@@ -2,7 +2,7 @@ package docs
 
 import "github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
 
-// swagger:route GET /check/generated check getGenerated
+// swagger:route GET /api/v1/check/generated check getGenerated
 //
 // Get a list of IDs of generated checks.
 //
@@ -11,6 +11,9 @@ import "github.com/pablogolobaro/chequery/internal/handlers/rest/v1/check"
 //     Schemes: http
 //
 //     Deprecated: false
+//
+//     Security:
+//        - Bearer:
 //
 //     Responses:
 //       200: generatedIds

@@ -7,6 +7,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	"github.com/pablogolobaro/chequery/cmd/client/client"
+	"github.com/pablogolobaro/chequery/cmd/client/client/auth_handlers"
 	"github.com/pablogolobaro/chequery/cmd/client/client/check"
 	"github.com/pablogolobaro/chequery/cmd/client/client/order"
 	"github.com/pablogolobaro/chequery/cmd/client/models"
@@ -15,6 +16,26 @@ import (
 	"os"
 	"testing"
 )
+
+const tokenJWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpvaG5Tbm93IiwiZXhwIjoxNjgwNTQ2NTk2fQ.u1pURDXEat-8zPl80el6zLBbjbovVdbQS44pPTbm3Aw"
+
+func TestAuthPostData(t *testing.T) {
+	apiClient := client.NewHTTPClient(nil)
+	tokenHandlerOK, err := apiClient.AuthHandlers.TokenHandler(&auth_handlers.TokenHandlerParams{
+		Body: &models.AuthDataRequest{
+			Password: "password",
+			Username: "JohnSnow",
+		},
+		Context: context.Background(),
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	assert.Equal(t, true, tokenHandlerOK.IsCode(200))
+	t.Log(tokenHandlerOK.GetPayload().Token)
+
+}
 
 func TestLiveProbe(t *testing.T) {
 	apiClient := client.NewHTTPClient(nil)
@@ -38,10 +59,13 @@ func TestOrderCreation(t *testing.T) {
 	}
 
 	apiClient := client.NewHTTPClient(nil)
-	createOrder, err := apiClient.Order.CreateOrder(&order.CreateOrderParams{
-		Body:    &models.OrderCreateRequest{Order: requestOrder},
-		Context: context.Background(),
-	})
+	createOrder, err := apiClient.Order.CreateOrder(
+		&order.CreateOrderParams{
+			Body:    &models.OrderCreateRequest{Order: requestOrder},
+			Context: context.Background(),
+		},
+		httptransport.BearerToken(tokenJWT),
+	)
 	if err != nil {
 		t.Error(err)
 		return
@@ -53,7 +77,10 @@ func TestOrderCreation(t *testing.T) {
 
 func TestGetGenerated(t *testing.T) {
 	apiClient := client.NewHTTPClient(nil)
-	getGenerated, err := apiClient.Check.GetGenerated(nil)
+	getGenerated, err := apiClient.Check.GetGenerated(
+		nil,
+		httptransport.BearerToken(tokenJWT),
+	)
 	if err != nil {
 		t.Error(err)
 		return
@@ -65,7 +92,10 @@ func TestGetGenerated(t *testing.T) {
 
 func TestUpdateStatus(t *testing.T) {
 	apiClient := client.NewHTTPClient(nil)
-	getGenerated, err := apiClient.Check.UpdateChecksStatus(&check.UpdateChecksStatusParams{IDs: []int64{16, 17}, Context: context.Background()})
+	getGenerated, err := apiClient.Check.UpdateChecksStatus(
+		&check.UpdateChecksStatusParams{IDs: []int64{16, 17}, Context: context.Background()},
+		httptransport.BearerToken(tokenJWT),
+	)
 	if err != nil {
 		t.Error(err)
 		return
@@ -75,13 +105,17 @@ func TestUpdateStatus(t *testing.T) {
 }
 
 func TestGetPDF(t *testing.T) {
-	transport := httptransport.New("localhost", "api/v1", []string{"http"})
+	transport := httptransport.New("localhost", "", []string{"http"})
 	transport.Consumers["application/pdf"] = runtime.ByteStreamConsumer()
 
 	apiClient := client.New(transport, strfmt.Default)
 	buffer := &bytes.Buffer{}
 
-	getPDF, err := apiClient.Check.GetPDF(&check.GetPDFParams{CheckID: 16, Context: context.Background()}, buffer)
+	getPDF, err := apiClient.Check.GetPDF(
+		&check.GetPDFParams{CheckID: 16, Context: context.Background()},
+		httptransport.BearerToken(tokenJWT),
+		buffer,
+	)
 	if err != nil {
 		t.Log(err.Error())
 	}

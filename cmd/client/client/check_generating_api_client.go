@@ -10,6 +10,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
+	"github.com/pablogolobaro/chequery/cmd/client/client/auth_handlers"
 	"github.com/pablogolobaro/chequery/cmd/client/client/check"
 	"github.com/pablogolobaro/chequery/cmd/client/client/health"
 	"github.com/pablogolobaro/chequery/cmd/client/client/order"
@@ -24,7 +25,7 @@ const (
 	DefaultHost string = "localhost"
 	// DefaultBasePath is the default BasePath
 	// found in Meta (info) section of spec file
-	DefaultBasePath string = "/api/v1"
+	DefaultBasePath string = "/"
 )
 
 // DefaultSchemes are the default schemes found in Meta (info) section of spec file
@@ -57,6 +58,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *CheckGener
 
 	cli := new(CheckGeneratingAPI)
 	cli.Transport = transport
+	cli.AuthHandlers = auth_handlers.New(transport, formats)
 	cli.Check = check.New(transport, formats)
 	cli.Health = health.New(transport, formats)
 	cli.Order = order.New(transport, formats)
@@ -104,6 +106,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // CheckGeneratingAPI is a client for check generating API
 type CheckGeneratingAPI struct {
+	AuthHandlers auth_handlers.ClientService
+
 	Check check.ClientService
 
 	Health health.ClientService
@@ -116,6 +120,7 @@ type CheckGeneratingAPI struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *CheckGeneratingAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
+	c.AuthHandlers.SetTransport(transport)
 	c.Check.SetTransport(transport)
 	c.Health.SetTransport(transport)
 	c.Order.SetTransport(transport)

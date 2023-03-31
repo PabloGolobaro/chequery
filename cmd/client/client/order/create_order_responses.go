@@ -84,12 +84,17 @@ func (o *CreateOrderCreated) IsCode(code int) bool {
 	return code == 201
 }
 
+// Code gets the status code for the create order created response
+func (o *CreateOrderCreated) Code() int {
+	return 201
+}
+
 func (o *CreateOrderCreated) Error() string {
-	return fmt.Sprintf("[POST /order][%d] createOrderCreated  %+v", 201, o.Payload)
+	return fmt.Sprintf("[POST /api/v1/order][%d] createOrderCreated  %+v", 201, o.Payload)
 }
 
 func (o *CreateOrderCreated) String() string {
-	return fmt.Sprintf("[POST /order][%d] createOrderCreated  %+v", 201, o.Payload)
+	return fmt.Sprintf("[POST /api/v1/order][%d] createOrderCreated  %+v", 201, o.Payload)
 }
 
 func (o *CreateOrderCreated) GetPayload() *models.OrderCreateResponse {
@@ -126,11 +131,6 @@ type CreateOrderDefault struct {
 	Payload *CreateOrderDefaultBody
 }
 
-// Code gets the status code for the create order default response
-func (o *CreateOrderDefault) Code() int {
-	return o._statusCode
-}
-
 // IsSuccess returns true when this create order default response has a 2xx status code
 func (o *CreateOrderDefault) IsSuccess() bool {
 	return o._statusCode/100 == 2
@@ -156,12 +156,17 @@ func (o *CreateOrderDefault) IsCode(code int) bool {
 	return o._statusCode == code
 }
 
+// Code gets the status code for the create order default response
+func (o *CreateOrderDefault) Code() int {
+	return o._statusCode
+}
+
 func (o *CreateOrderDefault) Error() string {
-	return fmt.Sprintf("[POST /order][%d] createOrder default  %+v", o._statusCode, o.Payload)
+	return fmt.Sprintf("[POST /api/v1/order][%d] createOrder default  %+v", o._statusCode, o.Payload)
 }
 
 func (o *CreateOrderDefault) String() string {
-	return fmt.Sprintf("[POST /order][%d] createOrder default  %+v", o._statusCode, o.Payload)
+	return fmt.Sprintf("[POST /api/v1/order][%d] createOrder default  %+v", o._statusCode, o.Payload)
 }
 
 func (o *CreateOrderDefault) GetPayload() *CreateOrderDefaultBody {

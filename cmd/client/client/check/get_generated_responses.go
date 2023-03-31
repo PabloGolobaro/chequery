@@ -83,12 +83,17 @@ func (o *GetGeneratedOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the get generated o k response
+func (o *GetGeneratedOK) Code() int {
+	return 200
+}
+
 func (o *GetGeneratedOK) Error() string {
-	return fmt.Sprintf("[GET /check/generated][%d] getGeneratedOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[GET /api/v1/check/generated][%d] getGeneratedOK  %+v", 200, o.Payload)
 }
 
 func (o *GetGeneratedOK) String() string {
-	return fmt.Sprintf("[GET /check/generated][%d] getGeneratedOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[GET /api/v1/check/generated][%d] getGeneratedOK  %+v", 200, o.Payload)
 }
 
 func (o *GetGeneratedOK) GetPayload() *models.GeneratedChecksResponse {
@@ -146,12 +151,17 @@ func (o *GetGeneratedInternalServerError) IsCode(code int) bool {
 	return code == 500
 }
 
+// Code gets the status code for the get generated internal server error response
+func (o *GetGeneratedInternalServerError) Code() int {
+	return 500
+}
+
 func (o *GetGeneratedInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /check/generated][%d] getGeneratedInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[GET /api/v1/check/generated][%d] getGeneratedInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *GetGeneratedInternalServerError) String() string {
-	return fmt.Sprintf("[GET /check/generated][%d] getGeneratedInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[GET /api/v1/check/generated][%d] getGeneratedInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *GetGeneratedInternalServerError) GetPayload() *GetGeneratedInternalServerErrorBody {

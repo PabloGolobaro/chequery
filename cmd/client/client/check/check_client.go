@@ -31,11 +31,11 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetGenerated(params *GetGeneratedParams, opts ...ClientOption) (*GetGeneratedOK, error)
+	GetGenerated(params *GetGeneratedParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetGeneratedOK, error)
 
-	GetPDF(params *GetPDFParams, writer io.Writer, opts ...ClientOption) (*GetPDFOK, error)
+	GetPDF(params *GetPDFParams, authInfo runtime.ClientAuthInfoWriter, writer io.Writer, opts ...ClientOption) (*GetPDFOK, error)
 
-	UpdateChecksStatus(params *UpdateChecksStatusParams, opts ...ClientOption) (*UpdateChecksStatusOK, error)
+	UpdateChecksStatus(params *UpdateChecksStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateChecksStatusOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -45,7 +45,7 @@ GetGenerated gets a list of i ds of generated checks
 
 This will return list of check IDs.
 */
-func (a *Client) GetGenerated(params *GetGeneratedParams, opts ...ClientOption) (*GetGeneratedOK, error) {
+func (a *Client) GetGenerated(params *GetGeneratedParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetGeneratedOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetGeneratedParams()
@@ -53,12 +53,13 @@ func (a *Client) GetGenerated(params *GetGeneratedParams, opts ...ClientOption) 
 	op := &runtime.ClientOperation{
 		ID:                 "getGenerated",
 		Method:             "GET",
-		PathPattern:        "/check/generated",
+		PathPattern:        "/api/v1/check/generated",
 		ProducesMediaTypes: []string{"application/json", "application/pdf"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &GetGeneratedReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
@@ -85,7 +86,7 @@ GetPDF gets pdf file for check
 
 This will download pdf file of explicit check.
 */
-func (a *Client) GetPDF(params *GetPDFParams, writer io.Writer, opts ...ClientOption) (*GetPDFOK, error) {
+func (a *Client) GetPDF(params *GetPDFParams, authInfo runtime.ClientAuthInfoWriter, writer io.Writer, opts ...ClientOption) (*GetPDFOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetPDFParams()
@@ -93,12 +94,13 @@ func (a *Client) GetPDF(params *GetPDFParams, writer io.Writer, opts ...ClientOp
 	op := &runtime.ClientOperation{
 		ID:                 "getPDF",
 		Method:             "GET",
-		PathPattern:        "/check/{check_id}/pdf",
+		PathPattern:        "/api/v1/check/{check_id}/pdf",
 		ProducesMediaTypes: []string{"application/pdf"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &GetPDFReader{formats: a.formats, writer: writer},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
@@ -125,7 +127,7 @@ UpdateChecksStatus updates status of some checks to be printed
 
 This will update status of checks in DB to "printed".
 */
-func (a *Client) UpdateChecksStatus(params *UpdateChecksStatusParams, opts ...ClientOption) (*UpdateChecksStatusOK, error) {
+func (a *Client) UpdateChecksStatus(params *UpdateChecksStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateChecksStatusOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateChecksStatusParams()
@@ -133,12 +135,13 @@ func (a *Client) UpdateChecksStatus(params *UpdateChecksStatusParams, opts ...Cl
 	op := &runtime.ClientOperation{
 		ID:                 "updateChecksStatus",
 		Method:             "PUT",
-		PathPattern:        "/check",
+		PathPattern:        "/api/v1/check",
 		ProducesMediaTypes: []string{"application/json", "application/pdf"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &UpdateChecksStatusReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}

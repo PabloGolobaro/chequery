@@ -4,7 +4,7 @@ import (
 	"os"
 )
 
-// swagger:route GET /check/{check_id}/pdf check getPDF
+// swagger:route GET /api/v1/check/{check_id}/pdf check getPDF
 //
 // Get pdf file for check.
 //
@@ -18,6 +18,9 @@ import (
 //
 //     Schemes: http
 //
+//     Security:
+//        - Bearer:
+//
 //     Deprecated: false
 //
 //     Responses:
@@ -28,7 +31,7 @@ import (
 type _ struct {
 	// The ID of a check
 	// in:path
-	CheckId int `json:"check_id"`
+	CheckID int `json:"check_id"`
 }
 
 // Pdf file of check

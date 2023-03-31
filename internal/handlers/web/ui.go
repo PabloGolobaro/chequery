@@ -67,12 +67,12 @@ func (u *uiHandler) PostMakeOrder(c echo.Context) error {
 		}
 	}
 
-	order := entity.Order{
+	newOrder := entity.Order{
 		PointID:  point_id,
 		Products: products,
 	}
 
-	createChecks, err := u.useCases.CreateChecks(c.Request().Context(), order)
+	createChecks, err := u.useCases.CreateChecks(c.Request().Context(), newOrder)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}

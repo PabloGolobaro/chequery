@@ -11,13 +11,14 @@ var once sync.Once
 
 type Config struct {
 	// the data source name (PostgresDSN) for connecting to the database. required.
-	DbUser   string `mapstructure:"DB_USER"`
-	DbPass   string `mapstructure:"DB_PASS"`
-	DbHost   string `mapstructure:"DB_HOST"`
-	DbPort   string `mapstructure:"DB_PORT"`
-	DbName   string `mapstructure:"DB_NAME"`
-	HttpHost string `mapstructure:"SERVER_HOST"`
-	HttpPort string `mapstructure:"SERVER_PORT"`
+	DbUser    string `mapstructure:"DB_USER"`
+	DbPass    string `mapstructure:"DB_PASS"`
+	DbHost    string `mapstructure:"DB_HOST"`
+	DbPort    string `mapstructure:"DB_PORT"`
+	DbName    string `mapstructure:"DB_NAME"`
+	HttpHost  string `mapstructure:"SERVER_HOST"`
+	HttpPort  string `mapstructure:"SERVER_PORT"`
+	JWTSecret string `mapstructure:"JWT_SECRET"`
 }
 
 func Load() Config {
@@ -33,6 +34,7 @@ func Load() Config {
 		Global.DbName = viper.GetString("DB_NAME")
 		Global.HttpHost = viper.GetString("SERVER_HOST")
 		Global.HttpPort = viper.GetString("SERVER_PORT")
+		Global.JWTSecret = viper.GetString("JWT_SECRET")
 	})
 
 	return Global

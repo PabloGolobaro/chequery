@@ -81,12 +81,17 @@ func (o *UpdateChecksStatusOK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the update checks status o k response
+func (o *UpdateChecksStatusOK) Code() int {
+	return 200
+}
+
 func (o *UpdateChecksStatusOK) Error() string {
-	return fmt.Sprintf("[PUT /check][%d] updateChecksStatusOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[PUT /api/v1/check][%d] updateChecksStatusOK  %+v", 200, o.Payload)
 }
 
 func (o *UpdateChecksStatusOK) String() string {
-	return fmt.Sprintf("[PUT /check][%d] updateChecksStatusOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[PUT /api/v1/check][%d] updateChecksStatusOK  %+v", 200, o.Payload)
 }
 
 func (o *UpdateChecksStatusOK) GetPayload() interface{} {
@@ -142,12 +147,17 @@ func (o *UpdateChecksStatusInternalServerError) IsCode(code int) bool {
 	return code == 500
 }
 
+// Code gets the status code for the update checks status internal server error response
+func (o *UpdateChecksStatusInternalServerError) Code() int {
+	return 500
+}
+
 func (o *UpdateChecksStatusInternalServerError) Error() string {
-	return fmt.Sprintf("[PUT /check][%d] updateChecksStatusInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[PUT /api/v1/check][%d] updateChecksStatusInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *UpdateChecksStatusInternalServerError) String() string {
-	return fmt.Sprintf("[PUT /check][%d] updateChecksStatusInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[PUT /api/v1/check][%d] updateChecksStatusInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *UpdateChecksStatusInternalServerError) GetPayload() *UpdateChecksStatusInternalServerErrorBody {

@@ -1,6 +1,6 @@
 package docs
 
-// swagger:route PUT /check check updateChecksStatus
+// swagger:route PUT /api/v1/check check updateChecksStatus
 //
 // Update status of some checks to be printed.
 //
@@ -9,6 +9,9 @@ package docs
 //     Schemes: http
 //
 //     Deprecated: false
+//
+//     Security:
+//        - Bearer:
 //
 //     Responses:
 //       200: empty

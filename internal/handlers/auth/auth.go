@@ -9,41 +9,64 @@ import (
 )
 
 const (
-	getToken = "/auth"
+	getToken        = "/auth"
+	exampleUsername = "JohnSnow"
+	examplePassword = "password"
 )
 
+type AuthDataRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type AuthDataResponce struct {
+	Token string `json:"token"`
+}
+
 type JwtCustomClaims struct {
-	Name  string `json:"name"`
-	Admin bool   `json:"admin"`
+	Username string `json:"username"`
 	jwt.StandardClaims
 }
 
 type authHandler struct {
-	log *zap.SugaredLogger
+	log       *zap.SugaredLogger
+	jwtSecret string
 }
 
-func NewAuthHandler(log *zap.SugaredLogger) *authHandler {
-	return &authHandler{log: log}
+func NewAuthHandler(log *zap.SugaredLogger, jwtSecret string) *authHandler {
+	return &authHandler{log: log, jwtSecret: jwtSecret}
 }
 
 func (u *authHandler) Register(router *echo.Group) {
 	router.Add(http.MethodPost, getToken, u.GenerateToken)
+	router.Add(http.MethodGet, getToken, u.PassFormData)
+}
+func (u *authHandler) PassFormData(c echo.Context) error {
+	return c.Render(http.StatusOK, "auth_form", nil)
 }
 
 func (u *authHandler) GenerateToken(c echo.Context) error {
+	authData := AuthDataRequest{
+		c.FormValue("username"),
+		c.FormValue("password"),
+	}
 
-	username := c.FormValue("username")
-	password := c.FormValue("password")
-
+	if authData.Username == "" || authData.Password == "" {
+		err := c.Bind(&authData)
+		if err != nil {
+			return echo.ErrBadRequest
+		}
+	}
+	u.log.Info(authData.Username)
+	u.log.Info(authData.Password)
 	// Throws unauthorized error
-	if username != "jon" || password != "shhh!" {
+	if authData.Username != exampleUsername || authData.Password != examplePassword {
 		return echo.ErrUnauthorized
 	}
 
 	// Set custom claims
 	claims := &JwtCustomClaims{
-		"Jon Snow",
-		true,
+		authData.Username,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 		},
@@ -53,12 +76,10 @@ func (u *authHandler) GenerateToken(c echo.Context) error {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Generate encoded token and send it as response.
-	t, err := token.SignedString([]byte("secret"))
+	t, err := token.SignedString([]byte(u.jwtSecret))
 	if err != nil {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, echo.Map{
-		"token": t,
-	})
+	return c.JSON(http.StatusOK, AuthDataResponce{Token: t})
 }
