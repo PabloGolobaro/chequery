@@ -52,26 +52,13 @@ Sends generated check pdf files to client listener and updates status of generat
 
 ### Api endpoint example:
 ##### create order
-    ``curl -X POST --location "http://localhost/api/v1/order" \
+    curl -X POST --location "http://localhost/api/v1/order" \
     -H "Authorization: Bearer your_generated_token" \
-    -d "{
-    \"point_id\": 1,
-    \"products\": [
-    {
-    \"name\": \"Meat\",
-    \"price\": 145,
-    \"quantity\": 3
-    },
-    {
-    \"name\": \"vegetables\",
-    \"price\": 32,
-    \"quantity\": 2
-    },
-    {
-    \"name\": \"Juice\",
-    \"price\": 48,
-    \"quantity\": 1
-    }
-    ]
-    }"``
+    -d "{\"point_id\": 1,\"products\":
+        [
+        {    \"name\": \"Meat\",    \"price\": 145,    \"quantity\": 3  },
+        {    \"name\": \"vegetables\",    \"price\": 32,    \"quantity\": 2 },
+        {    \"name\": \"Juice\",    \"price\": 48,    \"quantity\": 1  }
+        ]
+        }"
 
