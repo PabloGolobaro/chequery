@@ -27,6 +27,7 @@ func (a *Application) RegisterRouter(conf config.Config) error {
 	}
 
 	e.Static("/", "static")
+	e.Static("/docs", "static/swagger")
 
 	e.Renderer = a.renderer
 

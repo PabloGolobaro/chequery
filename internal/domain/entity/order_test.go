@@ -1,9 +1,28 @@
 package entity
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
+
+func TestOrderJson(t *testing.T) {
+	order := Order{
+		PointID: 1,
+		Products: []Product{
+			{Name: "Meat", Quantity: 3, Price: 145},
+			{Name: "vegetables", Quantity: 2, Price: 32},
+			{Name: "Juice", Quantity: 1, Price: 48}},
+	}
+	marshal, err := json.MarshalIndent(&order, "", "\t")
+	if err != nil {
+		return
+	}
+	fmt.Fprint(os.Stdout, string(marshal))
+
+}
 
 func TestOrderDetails_Details(t *testing.T) {
 	order := Order{

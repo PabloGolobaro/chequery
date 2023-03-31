@@ -5,6 +5,7 @@ export DB_PASS := password
 export DB_NAME := golo
 export SERVER_HOST := localhost
 export SERVER_PORT := 80
+export JWT_SECRET := secret
 
 #VERSION := $(shell git describe --tags --always --dirty)
 #
@@ -25,6 +26,8 @@ client:
 
 spec:
 	swagger generate spec -m -w ./cmd/server -o ./api/swagger.yaml
+	swagger generate spec -m -w ./cmd/server -o ./static/swagger/swagger.json
+
 swagger: spec
 	swagger serve -F=swagger ./api/swagger.yaml
 
